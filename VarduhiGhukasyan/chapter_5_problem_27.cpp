@@ -42,7 +42,9 @@ bool nerdrvac(const Circle& small, const Circle& big)
     if (small.r > big.r)
         return false;
 
-    double dis = small.center_distance(big); 
+    double dis = 1;
+    dis = small.center_distance(big); 
+    
     
     if (dis + small.r <= big.r)
         return true;
