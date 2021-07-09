@@ -1,0 +1,91 @@
+#include <iostream>
+int days_in_m[12] = { 31,28,31,30,31,30,31,31,30,31,30,31 };
+struct date
+{
+	int day;
+	int month;
+	int year;
+	date(int d, int m, int y) :day(d), month(m), year(y)
+	{}
+};
+void next_day(struct date& temp)
+{
+	temp.day++;
+	if (temp.year % 4 == 0)days_in_m[1] = 29;
+	else days_in_m[1] = 28;
+	if (temp.day > days_in_m[temp.month-1])
+	{
+		temp.day = 1;
+		temp.month++;
+		if (temp.month-1 > 11)
+		{
+			temp.month = 1;
+			temp.year++;
+		}
+	}
+	
+}
+
+void plus_k_days(struct date& temp, int k)
+{
+	temp.day+=k;
+	if (temp.year % 4 == 0)days_in_m[1] = 29;
+	else days_in_m[1] = 28;
+	if (temp.day > days_in_m[temp.month - 1])
+	{
+		while (temp.day > days_in_m[temp.month - 1])
+		{
+			
+			temp.day = temp.day - days_in_m[temp.month - 1];
+			temp.month++;
+			if (temp.month - 1 > 11)
+			{
+				temp.month = 1;
+				temp.year++;
+				if (temp.year % 4 == 0)days_in_m[1] = 29;
+				else days_in_m[1] = 28;
+			}
+		}
+		
+	}
+
+}
+//void minus_k_days(struct date& temp, int k)
+//{
+//	temp.day = temp.day - k ;
+//
+//	if (temp.year % 4 == 0)days_in_m[1] = 29;
+//	else days_in_m[1] = 28;
+//
+//	while (temp.day < 1)
+//	{
+//	    temp.day = days_in_m[temp.month - 2] + temp.day ;
+//		temp.month--;
+//		if (temp.month - 1 < 0)
+//		{
+//			temp.month = 12;
+//			temp.year--;
+//			if (temp.year % 4 == 0)days_in_m[1] = 29;
+//			else days_in_m[1] = 28;
+//		}
+//	}
+//
+//}
+void print(const struct date temp)
+{
+	std::cout << temp.day << "/" << temp.month << "/" << temp.year << "\n";
+}
+
+int main()
+{
+	struct date date_1(14,2,2022);
+	//next_day(date_1);
+	//print(date_1);
+
+	/*plus_k_days(date_1,49);
+	print(date_1);*/
+	//minus_k_days(date_1, 49);
+	print(date_1);
+
+	return 0;
+}
