@@ -1,5 +1,6 @@
 #include <iostream>
-void func_3(double a, double b, double*& res)
+#include <vector>
+void func_3(double a, double b, double* res)
 {
 	res[0] = a + b;
 	res[1] = a - b;
@@ -7,9 +8,12 @@ void func_3(double a, double b, double*& res)
 }
 int main()
 {
-	double arr[3];
-	double* ptr = arr;
-	func_3(4, 5,ptr);
-	std::cout << ptr[0] << " " << ptr[1] << " " << ptr[2] << "\n";
+	std::vector<double> arr = { 0,0,0 };
+	double a = 4, b = 5;
+	func_3(a, b, arr.data());
+	std::cout << a << " + " << b << " = " << arr[0] << "\n";
+	std::cout << a << " - " << b << " = " << arr[0] << "\n";
+	std::cout << a << " * " << b << " = " << arr[0] << "\n";
 	return 0;
 }
+
