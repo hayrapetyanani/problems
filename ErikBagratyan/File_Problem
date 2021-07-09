@@ -1,0 +1,43 @@
+#include <iostream>
+#include <string>
+#include <fstream>
+#include <algorithm>
+#include <map>
+#include <vector>
+
+using namespace std;
+
+int main()
+{
+	map<string, int> mp;
+	fstream fin;
+	fin.open("war+peace.txt", fstream::in | fstream::out | fstream::app);
+	if (!fin.is_open())
+	{
+		cout << "Error OPEN File\n";
+	}
+	else {
+		char ch;
+		string str = "";
+		while (!fin.eof())
+		{
+			str = "";
+			while (fin.get(ch) && ch != ' ' && ch != '\n') str += ch;
+			if(str != "") mp[str]++;
+		}
+	}
+	fin.close();
+
+	vector<pair<int, string>> vec(mp.size());
+	for (map<string, int>::const_iterator it = mp.begin(); it != mp.end(); ++it)
+	{
+		vec.push_back({ it->second,it->first });
+	}
+	sort(vec.begin(), vec.end());
+	int hachax_krknvox_bareri_qanak = 100;
+	for (int i = vec.size() - 1, j = 0; j < hachax_krknvox_bareri_qanak; --i, j++)
+	{
+		cout << vec[i].first << " : " << vec[i].second << endl;
+	}
+	return 0;
+}
