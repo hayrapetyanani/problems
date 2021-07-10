@@ -33,7 +33,7 @@ int main()
 	}
 	fin.close();
 
-	vector<pair<string, int>> vec);
+	vector<pair<string, int>> vec;
 	for (auto it : mp)
 	{
 		vec.push_back(it);
