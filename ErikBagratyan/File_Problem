@@ -6,7 +6,12 @@
 #include <vector>
 
 using namespace std;
-//comment
+
+bool myFunction(const pair<string, int>& num1, const pair<string, int>& num2)
+{
+	return (num1.second > num2.second);
+}
+
 int main()
 {
 	map<string, int> mp;
@@ -28,16 +33,16 @@ int main()
 	}
 	fin.close();
 
-	vector<pair<int, string>> vec(mp.size());
-	for (map<string, int>::const_iterator it = mp.begin(); it != mp.end(); ++it)
+	vector<pair<string, int>> vec);
+	for (auto it : mp)
 	{
-		vec.push_back({ it->second,it->first });
+		vec.push_back(it);
 	}
-	sort(vec.begin(), vec.end());
+	sort(vec.begin(), vec.end(), myFunction);
 	int hachax_krknvox_bareri_qanak = 100;
-	for (int i = vec.size() - 1, j = 0; j < hachax_krknvox_bareri_qanak; --i, j++)
+	for (int i = 0; j < hachax_krknvox_bareri_qanak; ++i)
 	{
-		cout << vec[i].first << " : " << vec[i].second << endl;
+		cout << vec[i].second << " : " << vec[i].first << endl;
 	}
 	return 0;
 }
