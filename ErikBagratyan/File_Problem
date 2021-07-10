@@ -40,7 +40,7 @@ int main()
 	}
 	sort(vec.begin(), vec.end(), myFunction);
 	int hachax_krknvox_bareri_qanak = 100;
-	for (int i = 0; j < hachax_krknvox_bareri_qanak; ++i)
+	for (int i = 0; i < hachax_krknvox_bareri_qanak; ++i)
 	{
 		cout << vec[i].second << " : " << vec[i].first << endl;
 	}
