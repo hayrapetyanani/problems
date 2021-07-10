@@ -6,7 +6,7 @@
 #include <vector>
 
 using namespace std;
-
+//comment
 int main()
 {
 	map<string, int> mp;
