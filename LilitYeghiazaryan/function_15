@@ -1,17 +1,18 @@
 #include <iostream>
-double aver(int* res, int sz)
+#include <vector>
+double avg(const std::vector<int>& res, int sz)
 {
-	double temp=0;
+	double sum = 0;
 	for (int i = 0; i < sz; i++)
 	{
-		temp = temp +res[i];
+		sum = sum + res[i];
 	}
-	return temp/sz;
+	return sum / sz;
 }
 
-int most_rep(int* res, int sz)
+int most_rep(const std::vector<int>& res, int sz)
 {
-	int max = 0, index=0;
+	int max = 0, index = 0;
 	for (int i = 0; i < sz; i++)
 	{
 		int count = 0;
@@ -28,7 +29,7 @@ int most_rep(int* res, int sz)
 	return res[index];
 }
 
-int div_rem(int* res, int sz)
+int div_rem(const std::vector<int>& res, int sz)
 {
 	int c = 0;
 	for (int i = 1; i < sz; i++)
@@ -38,36 +39,35 @@ int div_rem(int* res, int sz)
 	return c;
 }
 
-int first_negative(int* res, int sz)
+int first_negative(const std::vector<int>& res, int sz)
 {
-	
+
 	for (int i = 0; i < sz; i++)
 	{
 		if (res[i] < 0) return i;
 	}
 	return -1;
 }
-int last_zero(int* res, int sz)
+int last_zero(const std::vector<int>& res, int sz)
 {
-	int index = -1;
-	for (int i = 0; i < sz; i++)
+
+	for (int i = sz - 1; i >= 0; i--)
 	{
-		if (res[i] == 0) index = i;
+		if (res[i] == 0) return i;
 	}
-	return index;
+
 }
 
 int main()
 {
-	int size = 10;
-	int* arr = new int [size];
-	for (int i = 0; i < size; i++)
+
+	std::vector<int> arr;
+	arr.resize(10);
+	for (int i = 0; i < arr.size(); i++)
 	{
 		arr[i] = i;
-		
+
 	}
-	
-	
-	std::cout << div_rem(arr,size) << "\n";
+	std::cout << last_zero(arr, arr.size()) << "\n";
 	return 0;
 }
