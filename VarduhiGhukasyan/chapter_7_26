@@ -1,0 +1,38 @@
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+int factorial(int num)
+{
+	if (num == 0 || num == 1) {
+		return 1;
+	}
+		
+	return num * factorial(num - 1);
+}
+
+double f(double a) 
+{
+	return a * a;
+}
+double _sum(vector<double> vec, double(*foo)(double))
+{
+	double sum = 0;
+
+	for (int i = 0; i < vec.size(); ++i) {
+		sum += (vec[i] + f(vec[i])) / factorial(i);
+	}
+
+	return sum;
+	
+}
+
+int main()
+{
+	vector<double> myvecor{1,4,5,9,3,-1,7};
+
+	cout<<_sum(myvecor,f);
+
+	return 0;
+}
