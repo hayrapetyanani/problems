@@ -1,0 +1,34 @@
+#include <iostream>
+#include <vector>
+#include <climits>
+
+using namespace std;
+
+double f(int n,int m)
+{
+	return double (n + m) / 2;
+}
+
+double mid_max(vector<int> vec, double(*foo)(int,int))
+{
+	double max = INT_MIN;
+
+	for (int i = 0; i < vec.size() - 1; ++i) {
+		for (int j = i + 1; j < vec.size(); ++j) {
+			if (max < f(vec[i], vec[j])) {
+				max = f(vec[i], vec[j]);
+			}
+		}
+	}
+
+	return max;
+}
+
+int main()
+{
+	vector<int> myvecor{1,-5,8,-9,13};
+
+	cout<<mid_max(myvecor, f);
+
+	return 0;
+}
