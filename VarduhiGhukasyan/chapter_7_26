@@ -1,0 +1,36 @@
+#include <iostream>
+#include <vector>
+#include <climits>
+#include <math.h>
+#include <float.h>
+
+using namespace std;
+
+double f(int x,int y,int z)
+{
+	return pow(x * y * z, (double)1 / 3);
+}
+
+double mid_max(const vector<int>& vec, double(*foo)(int,int,int))
+{
+	double max = (-1)*DBL_MIN;
+
+	for (int i = 0; i < vec.size() - 1; ++i) {
+		for (int j = i + 1; j < vec.size(); ++j) {
+			if (max < foo(vec[i], vec[j], vec[i] * vec[j])) {
+				max = foo(vec[i], vec[j], vec[i] * vec[j]);
+			}
+		}
+	}
+
+	return max;
+}
+
+int main()
+{
+	vector<int> myvecor{1,-5,-8,9,1,2,-6};
+
+	cout<<mid_max(myvecor, f);
+
+	return 0;
+}
