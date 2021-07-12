@@ -10,7 +10,7 @@ double f(double n,double m)
 	return (n > m) ? n : m;
 }
 
-double _sum(vector<double> vec, double(*foo)(double,double))
+double _sum(const vector<double>& vec, double(*foo)(double,double))
 {
 	double sum = 0;
 
