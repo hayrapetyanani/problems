@@ -11,7 +11,7 @@ double f(int x,int y,int z)
 	return pow(x * y * z, (double)1 / 3);
 }
 
-double mid_max(vector<int> vec, double(*foo)(int,int,int))
+double mid_max(const vector<int>& vec, double(*foo)(int,int,int))
 {
 	double max = (-1)*DBL_MIN;
 
