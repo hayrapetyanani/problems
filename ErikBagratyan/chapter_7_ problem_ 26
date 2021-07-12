@@ -11,9 +11,9 @@ double michin_erkrachapakan(int n1, int n2, int n3)
     return pow(n1*n2*n3,(double)1/3);
 }
 
-double max_michin(vector<int> a, double (*ptrfun)(int,int,int))
+double max_michin(const vector<int>& a, double (*ptrfun)(int,int,int))
 {
-    double max = DBL_MIN * (-1);
+    double max = DBL_MAX * (-1);
     double temp = 0;
     for (int i = 0; i < a.size(); ++i) 
     {
