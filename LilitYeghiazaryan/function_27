@@ -1,0 +1,29 @@
+#include <iostream>
+#include <vector>
+#include <limits>
+#include <cmath>
+
+double square (double x)
+{
+    return x * x;;
+}
+
+double sum_f(std::vector<int> v, double (*f) (double))
+{
+    double sum = 0, fctr = 1;
+    for (int i = 0; i < v.size(); ++i)
+    {
+        sum = sum + ((v[i] + f(pow(v[i], i))) / fctr);
+        fctr = fctr * (i + 1);
+       
+    }
+    return sum;
+}
+
+
+int main()
+{
+    std::vector<int> arr = { 1,2,3 };
+    std::cout<<sum_f(arr,square);
+	return 0;
+}
