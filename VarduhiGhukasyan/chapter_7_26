@@ -16,7 +16,7 @@ double f(double a)
 {
 	return a * a;
 }
-double _sum(vector<double> vec, double(*foo)(double))
+double _sum(const vector<double>& vec, double(*foo)(double))
 {
 	double sum = 0;
 
