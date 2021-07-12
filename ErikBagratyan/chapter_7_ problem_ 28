@@ -20,7 +20,7 @@ int factorial(int number)
     return temp;
 }
 
-double sum_vec(vector<float> a, double (*ptrfun)(double))
+double sum_vec(const vector<float>& a, double (*ptrfun)(double))
 {
     double sum = 0;
     double temp_sum = 0;
