@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <climits>
+#include <float.h>
 
 using namespace std;
 
@@ -11,7 +12,7 @@ double f(int n,int m)
 
 double mid_max(vector<int> vec, double(*foo)(int,int))
 {
-	double max = INT_MIN;
+	double max = (-1)*DBL_MIN;
 
 	for (int i = 0; i < vec.size() - 1; ++i) {
 		for (int j = i + 1; j < vec.size(); ++j) {
