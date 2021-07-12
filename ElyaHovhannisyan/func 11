@@ -1,0 +1,137 @@
+#include <iostream>
+#include <vector>
+#include <iomanip>
+
+using namespace std;
+/*Նկարագրել ֆունկցիա, որը հղումով ստանում է օրը, ամիսը,
+տարին և նույն պարամետրերի միջոցով վերադարձնում է
+ա) դրան նախորդող օրը,
+բ) դրան հաջորդող k օր հետո ամսաթիվը (k-ն փոխանցվում
+է ֆունկցիային պարամետրի միջոցով),
+գ) դրան նախորդող k օր առաջ ամսաթիվը (k-ն փոխանցվում է ֆունկցիային պարամետրի միջոցով): */
+vector <int> m={31,28,31,30,31,30,31,31,30,31,30,31};
+struct date
+{
+    int day;
+    int month;
+    int year;
+};
+
+date func1(date &a)
+{
+        if (a.month==1 && a.day==1)
+          {
+              a.year--;
+              a.month=12;
+              a.day=31;
+          }
+          else
+        {
+            if (a.day==1  )
+        {  a.month--;
+         if (a.year%4==0 && a.month==2)
+            a.day=29;
+         else 
+             a.day=m[a.month-1];
+        }
+    else a.day--;
+        }
+    
+    return a;
+}
+date func2(date &a, int n)
+    {   
+    if (a.year%4==0)
+             m[1]=29;
+    if (n>m[a.month-1]-a.day)
+    {
+        n=n-(m[a.month-1]-a.day);
+        if (a.month==12)
+        { 
+            a.month=1;
+           a.year++;
+        }
+        else 
+        a.month++;
+    while (n>=m[a.month-1] )
+    {  
+         if (a.year%4==0)
+             m[1]=29;
+        else m[1]=28;
+          n=n-m[a.month-1];
+         if (a.month==12)
+         {
+             a.month=1;
+             a.year++;
+         }
+     else
+        a.month++;
+    }    
+        if (n==0 )
+            a.day=1;  
+        else 
+              a.day=n;
+    }
+    else 
+        a.day=a.day+n;
+    
+    return a;
+}
+    
+
+date func3(date &a, int n)
+{   
+    if (n>=a.day)
+    {
+        if (a.year%4==0)
+             m[1]=29;
+        n=n-a.day;
+        if (a.month==1)
+        { 
+            a.month=12;
+           a.year--;
+        }
+        else 
+        a.month--;
+    while (n>=m[a.month-1] )
+    {  
+         if (a.year%4==0)
+             m[1]=29;
+        else m[1]=28;
+          n=n-m[a.month-1];
+         if (a.month==1)
+         {
+             a.month=12;
+             a.year--;
+         }
+     else
+        a.month--;
+    }    
+        if (n==0 )
+            a.day=m[a.month-1];  
+        else 
+              a.day=m[a.month-1]-n;
+    }
+    else 
+        a.day=a.day-n;
+    
+    return a;
+}
+void print (date &b)
+{
+    cout.fill('0');
+ cout<<setw(2)<<b.day<<"."<<setw(2)<<b.month<<"."<<setw(4)<<b.year<<endl;
+}
+int main()
+{  
+    date d{27,2,2001}; 
+    int k=2;
+    print(d);
+    /* d=func1(d);
+     print(d);*/
+    d=func2(d,k);
+   print(d);
+     //d=func3(d,k);
+     //print(d);
+    return 0;
+}
