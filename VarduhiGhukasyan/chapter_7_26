@@ -21,7 +21,7 @@ double _sum(const vector<double>& vec, double(*foo)(double))
 	double sum = 0;
 
 	for (int i = 0; i < vec.size(); ++i) {
-		sum += (vec[i] + f(vec[i])) / factorial(i);
+		sum += (vec[i] + foo(vec[i])) / factorial(i);
 	}
 
 	return sum;
