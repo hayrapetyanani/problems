@@ -14,7 +14,7 @@ int euclid(int n1, int n2)
     return n1;
 }
 
-int sum_vec(vector<int> a, int (*ptrfun)(int,int))
+int sum_vec(const vector<int>& a, int (*ptrfun)(int,int))
 {
     long long sum = 0;
     for(int i = 0; i < a.size(); ++i)
