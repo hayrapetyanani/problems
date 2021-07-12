@@ -9,7 +9,7 @@ double max(double n1, double n2)
     return (n1 > n2)? n1 : n2;
 }
 
-double sum_vec(vector<float> a, double (*ptrfun)(double,double))
+double sum_vec(const vector<float>& a, double (*ptrfun)(double,double))
 {
     double sum = 0;
     int size = a.size() - 2;
