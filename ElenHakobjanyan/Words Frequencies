@@ -8,48 +8,39 @@
 
 using namespace std;
 
-bool addWordsToMap(string, map<string, int>&, int&);
-void sortAsVec(map<string, int>&, vector<pair<string, int>>&);
-void print(vector<pair<string, int>>&, int, int&);
+bool addWordsToMap(string, map<string, int>&);
+vector<pair<string, int>> sortAsVec(const map<string, int>&);
+void print(vector<pair<string, int>>&, int);
 
 int main()
 {
-	int count = 0;
 	map<string, int> mp;
-	addWordsToMap("war+peace.txt", mp, count);
+	addWordsToMap("C:\\Users\\hp_User\\Desktop\\war+peace.txt", mp);
 
-	vector<pair<string, int>> vec;
-	sortAsVec(mp, vec);
+	vector<pair<string, int>> vec = sortAsVec(mp);
 
-	print(vec, 100, count);	
+	print(vec, 100);
 	return 0;
 }
 
-bool addWordsToMap(string fname, map<string, int>& mp, int& count)
+bool addWordsToMap(string fname, map<string, int>& mp)
 {
 	ifstream fstream(fname);
-
 	if (!fstream.is_open())
 	{
 		cerr << "Unable to open '" << fname << "' file\n";
 		return false;
 	}
 
-	string buff;
 	char n;
-
+	string buff;
 	while (fstream.get(n))
 	{
 		n = tolower(n);
 		if (n >= 'a' && n <= 'z') buff += n;
 		else
 		{
-			if (buff != "")
-			{
-				//cout << buff << " ";
-				mp.insert_or_assign(buff, ++mp[buff]);
-				count++;
-			}
+			if (buff != "") ++mp[buff];
 			buff = "";
 		}
 	}
@@ -57,30 +48,31 @@ bool addWordsToMap(string fname, map<string, int>& mp, int& count)
 	return true;
 }
 
-void sortAsVec(map<string,int>& mp, vector<pair<string, int>>& vec)
+vector<pair<string, int>> sortAsVec(const map<string, int>& mp)
 {
+	vector<pair<string, int>> vec;
+
 	// copy <key,value> pairs from the map to the vector
-	copy(mp.begin(), mp.end(), back_inserter<vector<pair<string, int>>>(vec));
+	copy(mp.begin(), mp.end(), back_inserter(vec));
 
 	// sort the vector by increasing the order of its pair's second value
-	// if the second value is equal, order by the pair's first value
 	sort(vec.begin(), vec.end(),
-		[](const pair<string, int>& l, const pair<string, int>& r)
+		[](const auto& l, const auto& r)
 		{
-			if (l.second != r.second)
-			{
-				return l.second > r.second;
-			}
-			return l.first > r.first;
+			return l.second > r.second;
 		});
+	return vec;
 }
 
-void print(vector<pair<string, int>>& vec, int N, int& count)
+void print(vector<pair<string, int>>& vec, int N)
 {
+	int count = 0;
+	for (auto elem : vec) count += elem.second;
+
 	if (N > vec.size()) N = vec.size();
 	for (int i = 0; i < N; ++i)
 	{
 		cout << setw(3) << i + 1 << ". " << setw(8) << vec[i].first << ": " << setw(5) << vec[i].second
-			<< " - " << (double)(vec[i].second * 100)/ count  << "%\n";
+			<< " - " << (double)(vec[i].second * 100) / count << "%\n";
 	}
 }
