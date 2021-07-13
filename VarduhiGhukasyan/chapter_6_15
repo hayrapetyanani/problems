@@ -10,7 +10,7 @@
 
 using namespace std;
 
-double mid(const vector<int>& vec)
+double avg(const vector<int>& vec)
 {
 	int sum = 0;
 	int count = 0;
@@ -21,7 +21,7 @@ double mid(const vector<int>& vec)
 		count++;
 	}
 
-	return double(sum) / count;
+	return double(sum) / vec.size();
 }
 
 int repetitive_element(const vector<int>& vec)
@@ -31,7 +31,7 @@ int repetitive_element(const vector<int>& vec)
 
 	for (int i = 0; i < vec.size(); ++i) {
 		int count = 0;
-		for (int j = 0; j < vec.size() - 1; ++j) {
+		for (int j = 0; j < vec.size(); ++j) {
 			if (vec[i] == vec[j]) {
 				count++;
 			}
@@ -83,7 +83,7 @@ int main()
 {
 	vector<int> myvector{4,6,4,-5,0,5,5,4,-8,4,6,1};
 
-	cout << "The arithmetic average : " << mid(myvector)<<"\n";
+	cout << "The arithmetic average : " << avg(myvector)<<"\n";
 
 	cout << "The most repetitive element : " << repetitive_element(myvector)<<"\n";
 
