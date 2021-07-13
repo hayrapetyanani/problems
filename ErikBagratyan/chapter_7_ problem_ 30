@@ -4,7 +4,7 @@
 
 using namespace std;
 
-int euclid(int n1, int n2)
+/*int euclid(int n1, int n2)
 {
     while(n1 != n2)
     {
@@ -12,9 +12,18 @@ int euclid(int n1, int n2)
         else n2 -= n1;
     }
     return n1;
-}
+}*/
 
-int sum_vec(const vector<int>& a, int (*ptrfun)(int,int))
+int gcd(int a, int b)
+	{
+	    while (a * b) // քանի դեռ մեկնումեկը 0 չի
+	    {
+	        a > b ? a %= b : b %= a;
+	    }
+	    return a + b;
+	}
+
+long long sum_vec(const vector<int>& a, int (*ptrfun)(int,int))
 {
     long long sum = 0;
     for(int i = 0; i < a.size(); ++i)
@@ -33,6 +42,6 @@ int sum_vec(const vector<int>& a, int (*ptrfun)(int,int))
 int main()
 {
     vector<int> vec{2,4,8,16};            
-    cout << "sum : " << sum_vec(vec,euclid);
+    cout << "sum : " << sum_vec(vec,gcd);
     return 0;
 }
