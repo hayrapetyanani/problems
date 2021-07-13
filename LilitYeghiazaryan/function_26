@@ -2,15 +2,16 @@
 #include <vector>
 #include <limits>
 #include <cmath>
+#include <cfloat>
 
 double f (int a, int b, int c)
 {
     return std::cbrt(a * b * c);
 }
 
-double max_f(std::vector<int>& v, double (*f) (int, int, int))
+double max_f(const std::vector<int>& v, double (*f) (int, int, int))
 {
-    double max = std::numeric_limits<double>::min();
+    double max = DBL_MIN;
 
     for (int i = 0; i < v.size(); ++i)
     {
