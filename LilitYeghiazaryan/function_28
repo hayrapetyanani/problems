@@ -9,7 +9,7 @@ double square (double x)
 }
 
 
-double sum_f(std::vector<int>& v, double (*f) (double))
+double sum_f(const std::vector<int>& v, double (*f) (double))
 {
     double f_sum = 0, sum = 0, fctr = 1, temp = 0;
     for (int i = 0; i < v.size(); ++i)
