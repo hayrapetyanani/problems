@@ -25,25 +25,20 @@ int main()
     std::string w, filename, line;
     std::fstream file;
     filename = "war+peace.txt";
-    file.open(filename.c_str(),std::fstream::in | std::fstream::out | std::fstream::app);
+    file.open(filename.c_str());
     if (!file)
     {
         std::cout << "Error reading file!";
         return 0;
     }
-   
+
     std::map<std::string, int> words;
     while (!file.eof())
     {
         file >> w;
         w = transform_word(w);
 
-        auto search = words.find(w);
-        if (search != words.end()) {
-            search->second++;
-        }
-        else
-            words.insert(std::pair<std::string, int>(w, 1));
+        ++words[w];
     }
     file.close();
 
@@ -57,12 +52,12 @@ int main()
     std::map<int, std::string>::reverse_iterator it = key_count.rbegin();
 
     int i = 0;
-    while ((it != key_count.rend()) && (i<quantity))
+    while ((it != key_count.rend()) && (i < quantity))
     {
-        std::cout <<i+1<< ": " << it->second << "  "<< it->first  << std::endl;
+        std::cout << i + 1 << ": " << it->second << "  " << it->first << std::endl;
         i++;
         it++;
     }
-    
+
 
 }
