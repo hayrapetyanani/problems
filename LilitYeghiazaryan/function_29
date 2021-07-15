@@ -1,0 +1,28 @@
+#include <iostream>
+#include <vector>
+#include <cmath>
+
+double max (double x, double y)
+{
+    return (x > y) ? x : y;
+}
+
+
+double sum_f(std::vector<int>& v, double (*f) (double, double))
+{
+    double one = 1, sum = 0;
+    for (int i = 0; i < v.size()-1; ++i)
+    {
+        sum = sum + f(pow(v[i], i + 1), one / v[i + 1]);
+        one *= (-1);
+    }
+    return sum;
+}
+
+
+int main()
+{
+    std::vector<int> arr = {};
+    std::cout<<sum_f(arr,max);
+	return 0;
+}

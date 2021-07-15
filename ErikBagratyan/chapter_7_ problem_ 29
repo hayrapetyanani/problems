@@ -1,0 +1,29 @@
+#include <iostream>
+#include <vector>
+#include <cmath>
+
+using namespace std;
+
+double max(double n1, double n2)
+{
+    return (n1 > n2)? n1 : n2;
+}
+
+double sum_vec(const vector<float>& a, double (*ptrfun)(double,double))
+{
+    double sum = 0;
+    int size = a.size() - 2;
+    for (int i = 0; i <= size; ++i) 
+    {
+        sum += ptrfun(pow(a[i],i+1),pow(-1,i)/a[i+1]);
+    }
+    return sum;
+}
+
+
+int main()
+{
+    vector<float> vec{2,4,-0.5,0.125};            
+    cout << "sum : " << sum_vec(vec,max);
+    return 0;
+}

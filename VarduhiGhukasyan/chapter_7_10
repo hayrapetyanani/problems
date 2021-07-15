@@ -1,0 +1,16 @@
+#include <iostream>
+
+double Chebishev(int n, double x)
+{
+    if (n == 0) return 1;
+    if (n == 1) return x;
+
+    return 2 * x * Chebishev(n - 1, x) - Chebishev(n - 2, x);
+}
+
+int main()
+{
+    std::cout << Chebishev(3, 5);
+
+    return 0;
+}

@@ -1,38 +1,36 @@
 #include <iostream>
 #include <vector>
+#include <climits>
+#include <math.h>
+#include <float.h>
 
 using namespace std;
 
-int factorial(int num)
+double f(int x,int y,int z)
 {
-	if (num == 0 || num == 1) {
-		return 1;
-	}
-		
-	return num * factorial(num - 1);
+	return pow(x * y * z, (double)1 / 3);
 }
 
-double f(double a) 
+double mid_max(const vector<int>& vec, double(*foo)(int,int,int))
 {
-	return a * a;
-}
-double _sum(const vector<double>& vec, double(*foo)(double))
-{
-	double sum = 0;
+	double max = (-1)*DBL_MAX;
 
-	for (int i = 0; i < vec.size(); ++i) {
-		sum += (vec[i] + foo(vec[i])) / factorial(i);
+	for (int i = 0; i < vec.size() - 1; ++i) {
+		for (int j = i + 1; j < vec.size(); ++j) {
+			if (max < foo(vec[i], vec[j], vec[i] * vec[j])) {
+				max = foo(vec[i], vec[j], vec[i] * vec[j]);
+			}
+		}
 	}
 
-	return sum;
-	
+	return max;
 }
 
 int main()
 {
-	vector<double> myvecor{1,4,5,9,3,-1,7};
+	vector<int> myvecor{1,-5,-8,9,1,2,-6};
 
-	cout<<_sum(myvecor,f);
+	cout<<mid_max(myvecor, f);
 
 	return 0;
 }

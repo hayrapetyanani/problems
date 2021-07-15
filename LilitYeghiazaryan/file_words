@@ -1,0 +1,63 @@
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include <string>
+#include <map>
+
+std::string transform_word(std::string s)
+{
+    for (int i = 0; i < s.size(); i++) {
+        s[i] = tolower(s[i]);
+        if (s[i] < 'a' || s[i] > 'z')
+        {
+            s.erase(i, 1);
+            i--;
+        }
+    }
+    return s;
+}
+int main()
+{
+    int quantity;
+    std::cout << "Insert quantity of most common words: ";
+    std::cin >> quantity;
+
+    std::string w, filename, line;
+    std::fstream file;
+    filename = "war+peace.txt";
+    file.open(filename.c_str());
+    if (!file)
+    {
+        std::cout << "Error reading file!";
+        return 0;
+    }
+
+    std::map<std::string, int> words;
+    while (!file.eof())
+    {
+        file >> w;
+        w = transform_word(w);
+
+        ++words[w];
+    }
+    file.close();
+
+
+    std::multimap<int, std::string> key_count;
+    for (auto y : words)
+    {
+        key_count.insert(std::pair < int, std::string>(y.second, y.first));
+    }
+
+    std::map<int, std::string>::reverse_iterator it = key_count.rbegin();
+
+    int i = 0;
+    while ((it != key_count.rend()) && (i < quantity))
+    {
+        std::cout << i + 1 << ": " << it->second << "  " << it->first << std::endl;
+        i++;
+        it++;
+    }
+
+
+}

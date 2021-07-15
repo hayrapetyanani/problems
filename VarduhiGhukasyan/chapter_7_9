@@ -1,0 +1,31 @@
+#include <iostream>
+#include <vector>
+#include <ctime>
+
+void push_and_reverse(std::vector<int>& vec, int& push_count)
+{
+    if (push_count == vec.size())
+    {
+        std::cout << std::endl;
+        return;
+    }
+    vec.push_back(rand() % 13 - 5);
+    std::cout << vec.back() << " ";
+    push_and_reverse(vec, push_count);
+    std::cout << vec[--push_count] << " ";
+}
+
+int main()
+{
+    srand(time(NULL));
+
+    std::vector<int> myvector;
+    int size;
+
+    std::cout << "Enter the size : ";
+    std::cin >> size;
+
+    push_and_reverse(myvector, size);
+
+    return 0;
+}

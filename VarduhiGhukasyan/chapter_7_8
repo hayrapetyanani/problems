@@ -1,0 +1,28 @@
+#include <iostream>
+#include<vector>
+
+void reverse_vector(const std::vector<int>& vec, int size)
+{
+	if (size == 0)
+		return;
+
+	std::cout << vec[size-1]<<" ";
+	reverse_vector(vec, size - 1);
+}
+
+int main()
+{        
+	std::vector<int> myvector{ 1,2,3,4,5 };
+
+	std::cout << "Old vector \n";
+	for (auto i: myvector)
+	{
+		std::cout << i <<" ";
+	}
+
+	std::cout << "\nVector after reverse \n";
+
+	reverse_vector(myvector, myvector.size());
+   
+   return 0;
+}

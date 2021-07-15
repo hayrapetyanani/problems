@@ -1,0 +1,15 @@
+#include <iostream>
+
+using namespace std;
+
+int euclid(int a, int b)
+{
+    if(a == 0) return b;
+    return euclid(b % a, a);
+}
+
+int main()
+{
+    cout << euclid(34,17);
+    return 0;
+}

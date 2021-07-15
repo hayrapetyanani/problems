@@ -1,0 +1,45 @@
+#include <iostream>
+#include <vector>
+#include <math.h>
+
+using namespace std;
+
+int factorial(int num)
+{
+	if (num == 0 || num == 1) {
+		return 1;
+	}
+		
+	return num * factorial(num - 1);
+}
+
+double f(double a) 
+{
+	return a * a * a;
+}
+
+double _sum(const vector<double> & vec, double(*foo)(double))
+{
+	double sum = 0;
+	double temp = 0;
+
+	for (int i = 0; i < vec.size(); ++i) {
+		for (int j =0; j < i+1; ++j) {
+			temp += pow(foo(vec[j]),j+1);
+		}
+
+		sum += factorial(i) / temp;
+	}
+
+	return sum;
+	
+}
+
+int main()
+{
+	vector<double> myvecor{1,2,3};
+
+	cout<<_sum(myvecor,f);
+
+	return 0;
+}
