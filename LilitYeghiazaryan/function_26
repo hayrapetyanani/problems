@@ -1,0 +1,38 @@
+#include <iostream>
+#include <vector>
+#include <limits>
+#include <cmath>
+#include <cfloat>
+
+double f (int a, int b, int c)
+{
+    return std::cbrt(a * b * c);
+}
+
+double max_f(const std::vector<int>& v, double (*f) (int, int, int))
+{
+    double max = DBL_MIN;
+
+    for (int i = 0; i < v.size(); ++i)
+    {
+        for (int j = i + 1; j < v.size(); ++j)
+        {
+            double f_val = f((v[i]), v[j], v[i]*v[j]);
+            if (max < f_val)
+            {
+                
+                max = f_val;
+            }
+        }
+    }
+
+    return max;
+}
+
+
+int main()
+{
+    std::vector<int> arr = { 1,2,3,4,5 };
+    std::cout<<max_f(arr, f);
+	return 0;
+}
