@@ -16,8 +16,8 @@ double mid_max(const vector<int>& vec, double(*foo)(int,int))
 
 	for (int i = 0; i < vec.size() - 1; ++i) {
 		for (int j = i + 1; j < vec.size(); ++j) {
-			if (max < f(vec[i], vec[j])) {
-				max = f(vec[i], vec[j]);
+			if (max < foo(vec[i], vec[j])) {
+				max = foo(vec[i], vec[j]);
 			}
 		}
 	}
