@@ -1,0 +1,78 @@
+#include <iostream>
+#include <iomanip>
+#include <fstream>
+#include <string>
+#include <map>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+bool addWordsToMap(string, map<string, int>&);
+vector<pair<string, int>> sortAsVec(const map<string, int>&);
+void print(vector<pair<string, int>>&, int);
+
+int main()
+{
+	map<string, int> mp;
+	addWordsToMap("C:\\Users\\hp_User\\Desktop\\war+peace.txt", mp);
+
+	vector<pair<string, int>> vec = sortAsVec(mp);
+
+	print(vec, 100);
+	return 0;
+}
+
+bool addWordsToMap(string fname, map<string, int>& mp)
+{
+	ifstream fstream(fname);
+	if (!fstream.is_open())
+	{
+		cerr << "Unable to open '" << fname << "' file\n";
+		return false;
+	}
+
+	char n;
+	string buff;
+	while (fstream.get(n))
+	{
+		n = tolower(n);
+		if (n >= 'a' && n <= 'z') buff += n;
+		else
+		{
+			if (buff != "") ++mp[buff];
+			buff = "";
+		}
+	}
+	fstream.close();
+	return true;
+}
+
+vector<pair<string, int>> sortAsVec(const map<string, int>& mp)
+{
+	vector<pair<string, int>> vec;
+
+	// copy <key,value> pairs from the map to the vector
+	copy(mp.begin(), mp.end(), back_inserter(vec));
+
+	// sort the vector by increasing the order of its pair's second value
+	sort(vec.begin(), vec.end(),
+		[](const auto& l, const auto& r)
+		{
+			return l.second > r.second;
+		});
+	return vec;
+}
+
+void print(vector<pair<string, int>>& vec, int N)
+{
+	int count = 0;
+	for (auto elem : vec) count += elem.second;
+
+	if (N > vec.size()) N = vec.size();
+	for (int i = 0; i < N; ++i)
+	{
+		cout << setw(3) << i + 1 << ". " << setw(8) << vec[i].first << ": " << setw(5) << vec[i].second
+			<< " - " << (double)(vec[i].second * 100) / count << "%\n";
+	}
+}
