@@ -10,7 +10,7 @@ double f(int n,int m)
 	return double (n + m) / 2;
 }
 
-double mid_max(vector<int> vec, double(*foo)(int,int))
+double mid_max(const vector<int>& vec, double(*foo)(int,int))
 {
 	double max = (-1)*DBL_MIN;
 
