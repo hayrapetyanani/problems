@@ -1,0 +1,97 @@
+//15.Նկարագրել ֆունկցիա, որն արգումենտում ստանում է ամբողջ թվերի հաջորդականություն և վերադարձնում է հաջորդականության
+//ա) տարրերի միջին թվաբանականը,
+//բ) ամենաշատ կրկնվող տարրը,
+//գ) այն տարրերի քանակը, որոնք առանց մնացորդի բաժանվում են իրենց կարգահամարի վրա,
+//դ) առաջին բացասական տարրի կարգահամարը կամ - 1,եթե այն բացասական տարր չի պարունակում,
+//ե) վերջին 0 - ի կարգահամարը կամ - 1, եթե այն 0 - ներ չի պարունակում
+
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+double avg(const vector<int>& vec)
+{
+	int sum = 0;
+	int count = 0;
+
+	for (int i = 0; i < vec.size(); ++i)
+	{
+		sum += vec[i];
+		count++;
+	}
+
+	return double(sum) / vec.size();
+}
+
+int repetitive_element(const vector<int>& vec)
+{
+	int most = 0;
+	int ID = 0;
+
+	for (int i = 0; i < vec.size(); ++i) {
+		int count = 0;
+		for (int j = 0; j < vec.size(); ++j) {
+			if (vec[i] == vec[j]) {
+				count++;
+			}
+		}
+		if (most < count) {
+			most = count;
+			ID = i;
+		}
+	}
+	return vec[ID];
+}
+
+int _count_element(const vector<int>& vec)
+{
+	int count = 0;
+
+	for (int i = 1; i < vec.size(); ++i) {
+		if (vec[i] % i == 0) {
+			count++;
+		}
+	}
+
+	return count;
+}
+
+int negative(const vector<int>& vec)
+{
+	for (int i=0; i < vec.size(); ++i) {
+
+		if (vec[i] < 0) {
+			return i;
+		}
+	}
+	return -1;
+}
+
+int _nul(const vector<int>& vec)
+{
+	for (int i = vec.size() - 1; i >= 0; --i) 
+	{
+		if (vec[i] == 0) {
+			return i;
+		}
+	}
+	return -1;
+}
+
+int main()
+{
+	vector<int> myvector{4,6,4,-5,0,5,5,4,-8,4,6,1};
+
+	cout << "The arithmetic average : " << avg(myvector)<<"\n";
+
+	cout << "The most repetitive element : " << repetitive_element(myvector)<<"\n";
+
+	cout << "Count : "<< _count_element(myvector)<<"\n";
+
+	cout << "First negative element : "<< negativ(myvector) << "\n";
+
+	cout << "Тhe last 0 : " << _nul(myvector) << "\n";
+
+	return 0;
+}
