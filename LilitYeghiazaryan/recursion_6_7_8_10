@@ -18,6 +18,22 @@ int bigDivider(int num1, int num2) //6
 	return bigDivider(num1, num2);
 }
 
+double n_power(double num, int pow) //7
+{
+	if (pow == 1)
+	{		
+		return num;
+	}
+	if (pow % 2 == 0)
+	{
+		return n_power(num, pow / 2) * n_power(num, pow / 2);
+	}
+	if (pow % 2 != 0)
+	{
+		return num * n_power(num, pow - 1);
+	}
+}
+
 void reverse_cout(const std::vector<int> arr, int index) //8
 {
 	if (index == 0)
@@ -45,6 +61,7 @@ int chebyshev(int num, int index) //10
 int main()
 {
 	std::cout << "Biggest Divider " << bigDivider(216, 48) << std::endl;
+	std::cout << "Power " << n_power(9, 6) << std::endl;
 	const std::vector<int> vec = { 1, 2, 3, 4, 5 };
 	reverse_cout(vec, vec.size()-1);
 	std::cout << "Chebyshev number " << chebyshev(4, 3) << std::endl;
