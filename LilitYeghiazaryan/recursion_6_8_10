@@ -1,0 +1,52 @@
+#include <iostream>
+#include <vector>
+int bigDivider(int num1, int num2) //6
+{
+	if (num1 == num2)
+	{
+		return num1;
+	}
+	if (num1 > num2)
+	{
+		num1 -= num2;
+	}
+	else
+	{
+		num2 -= num1;
+	}
+
+	return bigDivider(num1, num2);
+}
+
+void reverse_cout(const std::vector<int> arr, int index) //8
+{
+	if (index == 0)
+	{
+		std::cout << std::endl << arr[0] << " ";
+		return;
+	}
+	std::cout << arr[index] << " ";
+	return reverse_cout(arr, index - 1);
+}
+
+int chebyshev(int num, int index) //10
+{
+	if (index == 0)
+	{
+		return 1;
+	}
+	if (index == 1)
+	{
+		return num;
+	}
+	return 2 * num * chebyshev(num, index - 1) - chebyshev(num, index - 2);
+}
+
+int main()
+{
+	std::cout << "Biggest Divider " << bigDivider(216, 48) << std::endl;
+	const std::vector<int> vec = { 1, 2, 3, 4, 5 };
+	reverse_cout(vec, vec.size()-1);
+	std::cout << "Chebyshev number " << chebyshev(4, 3) << std::endl;
+
+}
