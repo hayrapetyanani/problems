@@ -1,0 +1,17 @@
+#include <iostream>
+
+
+float number_pow(float x, int n)
+{
+    if(n == 0) return 1;
+    if(n == 1) return x;
+    
+    if(n % 2 == 0) return number_pow(x,n/2) * number_pow(x,n/2);
+    return x * number_pow(x,n-1);
+}
+ 
+int main()
+{
+    std::cout << number_pow(2.25,4);
+    return 0;
+}
