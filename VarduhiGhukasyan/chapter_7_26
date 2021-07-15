@@ -13,7 +13,7 @@ double f(int x,int y,int z)
 
 double mid_max(const vector<int>& vec, double(*foo)(int,int,int))
 {
-	double max = (-1)*DBL_MIN;
+	double max = (-1)*DBL_MAX;
 
 	for (int i = 0; i < vec.size() - 1; ++i) {
 		for (int j = i + 1; j < vec.size(); ++j) {
