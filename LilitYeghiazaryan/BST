@@ -1,0 +1,454 @@
+#include <cassert>
+#include <limits>
+#include <iostream>
+#include <stack>
+
+struct Node
+{
+    Node(int d = 0, Node* l = nullptr, Node* r = nullptr)
+        : data(d)
+        , left(l)
+        , right(r)
+    {}
+
+    int data;
+    Node* left;
+    Node* right;
+};
+
+class BST
+{
+public:
+    BST()
+        : root(nullptr)
+    {}
+
+    ~BST()
+    {
+        visit(root);
+        // TODO - free memory
+    }
+
+    //TODO- should return the number of elements
+    int size() const
+    {
+        Node* curr = root;
+        std::stack<Node*> prev;
+        int sz = curr ? 1 : 0;
+
+        while (curr)
+        {
+            if (curr->right)
+            {
+                prev.push(curr->right);
+                sz++;
+
+            }
+            if (curr->left)
+            {
+                sz++;
+
+                curr = curr->left;
+            }
+            else
+            {
+                if (!prev.empty())
+                {
+                    curr = prev.top();
+                    prev.pop();
+                }
+                else
+                {
+                    return sz;
+                }
+            }
+
+
+        }
+        return sz;
+    }
+
+    // XYZRec-named functions are just helper functions which then call
+    // another function normally with extra Node* which then does the job.
+    int sizeRec() const
+    {
+        return sizeRec(root);
+    }
+
+    bool find(int key) const
+    {
+        Node* curr = root;
+        while (curr)
+        {
+            if (curr->data == key)
+            {
+                return true;
+            }
+            curr = curr->data < key ? curr->right : curr->left;
+        }
+        return false;
+    }
+
+    bool findRec(int key) const
+    {
+        return findRec(root, key);
+    }
+
+    void insert(int key)
+    {
+        if (!root)
+        {
+            root = new Node(key);
+            return;
+        }
+
+        Node* prev = nullptr;
+        Node* curr = root;
+
+        while (curr)
+        {
+            prev = curr;
+            curr = curr->data < key ? curr->right : curr->left;
+        }
+        if (prev->data < key)
+        {
+            prev->right = new Node(key);
+        }
+        else
+        {
+            prev->left = new Node(key);
+        }
+    }
+
+    void insertRec(int key)
+    {
+        insertRec(root, key);
+    }
+
+    // TODO (difficult)
+    // consider what happens when the node has 2 children, or just 1 or not at all
+    // how about using minRec()?
+    void remove(int key)
+    {
+    }
+
+    int min() const
+    {
+        Node* curr = root;
+        while (curr->left)
+        {
+            curr = curr->left;
+        }
+        return curr->data;
+    }
+
+    int minRec() const
+    {
+        return minRec(root);
+    }
+
+    // selects kth smallest element
+    // k == 0 means the minimum,
+    // k == 1 the next one in the order (second smallest)
+    int select(int k) const
+    {
+        Node* curr = root;
+        while (curr)
+        {
+            int leftSize = sizeRec(curr->left);
+            if (leftSize == k)
+            {
+                return curr->data;
+            }
+            if (leftSize < k)
+            {
+                curr = curr->right;
+                k = k - (leftSize + 1);
+            }
+            else
+            {
+                curr = curr->left;
+            }
+        }
+        return std::numeric_limits<int>::max();
+    }
+
+    int selectRec(int k) const
+    {
+        return selectRec(root, k);
+    }
+
+    // TODO - the length of the longest path from root to leaves
+    int height() const
+    {
+        
+        return -1;
+    }
+
+    // TODO
+    int heightRec() const
+    {
+        return heightRec(root);
+    }
+
+    // TODO * - careful
+    bool isBST() const
+    {
+        return false;
+    }
+
+    void inorderRec() const
+    {
+        inorderRec(root);
+    }
+
+    // TODO
+    void preorderRec() const
+    {
+        preorderRec(root);
+    }
+
+    // TODO
+    void postorderRec() const
+    {
+        postorderRec(root);
+    }
+
+    // start here before inorder and postorder iterative versions
+    void preorder() const
+    {
+        /*Node* curr = root;
+        std::stack<Node*> prnt_stck;
+
+        while (curr || !prnt_stck.empty())
+        {
+            while (curr)
+            {
+                std::cout << curr->data << ", ";
+
+                if (curr->right)
+                {
+                    prnt_stck.push(curr->right);
+                }
+                curr = curr->left;
+            }
+
+            if (!prnt_stck.empty())
+            {
+                curr = prnt_stck.top();
+                prnt_stck.pop();
+            }
+
+        }*/
+        Node* curr = root;
+        std::stack<Node*> stack1, stack2;
+        stack1.push(curr);
+
+        while (!stack1.empty())
+        {
+            curr = stack1.top();
+            stack1.pop();
+            std::cout << curr->data << ", ";
+
+            if (curr->right)
+            {
+                stack1.push(curr->right);
+            }
+            if (curr->left)
+            {
+                stack1.push(curr->left);
+            }
+
+        }
+
+    }
+
+    // TODO
+    void inorder() const
+    {
+        Node* curr = root;
+        std::stack<Node*> prnt_stck;
+
+
+        while (curr || !prnt_stck.empty())
+        {
+            while (curr)
+            {
+                prnt_stck.push(curr);
+                curr = curr->left;
+            }
+
+            curr = prnt_stck.top();
+            prnt_stck.pop();
+
+            std::cout << curr->data << ", ";
+
+            curr = curr->right;
+        }
+    }
+
+    // TODO
+    void postorder() const
+    {
+        Node* curr = root;
+        std::stack<Node*> stack1, stack2;
+        stack1.push(curr);
+
+        while (!stack1.empty())
+        {
+            curr = stack1.top();
+            stack1.pop();
+            if (curr->left)
+            {
+                stack1.push(curr->left);
+            }
+            if (curr->right)
+            {
+                stack1.push(curr->right);
+            }
+            stack2.push(curr);
+        }
+
+        while (!stack2.empty())
+        {
+            std::cout << stack2.top()->data << ", ";
+            stack2.pop();
+        }
+
+
+    }
+
+    // TODO - using queue
+    int width() const
+    {
+        return -1;
+    }
+
+private:
+    int sizeRec(Node* x) const
+    {
+        if (!x)
+        {
+            return 0;
+        }
+        return 1 + sizeRec(x->left) + sizeRec(x->right);
+    }
+
+    bool findRec(Node* x, int key) const
+    {
+        if (!x)
+        {
+            return false;
+        }
+        return x->data < key ? findRec(x->right, key) : findRec(x->left, key);
+    }
+
+    // Can be "Node* insertRec(Node* x, int key)"
+    void insertRec(Node*& x, int key)
+    {
+        if (!x)
+        {
+            x = new Node(key);
+            return;
+        }
+
+        if (x->data < key)
+        {
+            insertRec(x->right, key);
+        }
+        else
+        {
+            insertRec(x->left, key);
+        }
+    }
+
+    int minRec(Node* x) const
+    {
+        if (!x->left)
+        {
+            return x->data;
+        }
+        return minRec(x->left);
+    }
+
+    // TODO
+    int selectRec(Node* x, int k) const
+    {
+        return -1;
+    }
+
+    void inorderRec(Node* x) const
+    {
+        if (x)
+        {
+            inorderRec(x->left);
+            std::cout << x->data << ", ";
+            inorderRec(x->right);
+        }
+    }
+    void preorderRec(Node* x) const
+    {
+        if (x)
+        {
+            std::cout << x->data << ", ";
+            preorderRec(x->left);
+            preorderRec(x->right);
+        }
+    }
+
+    void postorderRec(Node* x) const
+    {
+        if (x)
+        {
+            postorderRec(x->left);
+            postorderRec(x->right);
+            std::cout << x->data << ", ";
+        }
+    }
+    int heightRec(Node* x) const
+    {
+        if (!x)
+        {
+            return 0;
+        }
+        return  heightRec(x->right) > heightRec(x->left) ? heightRec(x->right) + 1 : heightRec(x->left) + 1;
+    }
+
+    void visit(Node* x) const
+    {
+        if (x)
+        {
+            visit(x->left);
+            visit(x->right);
+            delete x;
+        }
+    }
+
+private:
+    Node* root;
+};
+
+int main()
+{
+    BST t;
+    t.insert(7);
+    t.insert(1);
+    t.insert(5);
+    t.insert(17);
+    t.insert(-44);
+    t.insert(6);
+    //t.inorderRec();
+    //std::cout << std::endl;
+    t.preorderRec();
+    std::cout << std::endl;
+    //t.postorderRec();
+    //std::cout << std::endl;
+    //std::cout<<t.heightRec()<<std::endl;
+    //std::cout << t.size() << std::endl;
+    //t.inorder();
+    //t.postorder();
+    t.preorder();
+  return 0;
+}
+
+
