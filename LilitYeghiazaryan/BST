@@ -2,6 +2,8 @@
 #include <limits>
 #include <iostream>
 #include <stack>
+#include <queue>
+
 
 struct Node
 {
@@ -25,7 +27,7 @@ public:
 
     ~BST()
     {
-        visit(root);
+        visit_delete(root);
         // TODO - free memory
     }
 
@@ -181,8 +183,35 @@ public:
     // TODO - the length of the longest path from root to leaves
     int height() const
     {
-        
-        return -1;
+        int size, height;
+        Node* curr = root;
+        std::queue<Node*> queue;
+        queue.push(root);
+        height = 0;
+
+        while (!queue.empty())
+        {
+            size = queue.size();
+            while (size--)
+            {
+                curr = queue.front();
+                queue.pop();
+
+                if (curr->left)
+                {
+                    queue.push(curr->left);
+
+                }
+                if (curr->right)
+                {
+                    queue.push(curr->right);
+
+                }
+
+            }
+            height++;
+        }
+        return height;
     }
 
     // TODO
@@ -194,7 +223,49 @@ public:
     // TODO * - careful
     bool isBST() const
     {
-        return false;
+        int size, height;
+        Node* curr = root;
+        std::queue<Node*> queue;
+        queue.push(root);
+
+        while (!queue.empty())
+        {
+            size = queue.size();
+            while (size--)
+            {
+                curr = queue.front();
+                queue.pop();
+                if (curr->left) 
+                {
+                    if (curr->left->data < curr->data)
+                    {
+                        queue.push(curr->left);
+
+                    }
+
+                    else
+                    {
+                        return false;
+                    }
+                }
+                if (curr->right)
+                {
+                    if (curr->right->data > curr->data)
+                    {
+                        queue.push(curr->right);
+
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+
+            }
+            
+        }
+
+        return true;
     }
 
     void inorderRec() const
@@ -321,7 +392,39 @@ public:
     // TODO - using queue
     int width() const
     {
-        return -1;
+        int max, temp_max, size;
+        Node* curr = root;
+        std::queue<Node*> queue;
+        queue.push(root);
+        max = root ? 1 : 0;
+
+        while (!queue.empty())
+        {
+            temp_max = 0;
+            size = queue.size();
+            while (size--)
+            {
+                curr = queue.front();
+                queue.pop();
+
+                if (curr->left)
+                {
+                    queue.push(curr->left);
+                    temp_max++;
+                }
+                if (curr->right)
+                {
+                    queue.push(curr->right);
+                    temp_max++;
+                }
+                if (temp_max > max)
+                {
+                    max = temp_max;
+                }
+            }
+        }
+        return max;
+
     }
 
 private:
@@ -414,15 +517,16 @@ private:
         return  heightRec(x->right) > heightRec(x->left) ? heightRec(x->right) + 1 : heightRec(x->left) + 1;
     }
 
-    void visit(Node* x) const
+    void visit_delete(Node* x) const
     {
         if (x)
         {
-            visit(x->left);
-            visit(x->right);
+            visit_delete(x->left);
+            visit_delete(x->right);
             delete x;
         }
     }
+
 
 private:
     Node* root;
@@ -437,18 +541,24 @@ int main()
     t.insert(17);
     t.insert(-44);
     t.insert(6);
+    t.insert(18);
+
     //t.inorderRec();
     //std::cout << std::endl;
-    t.preorderRec();
-    std::cout << std::endl;
+    //t.preorderRec();
+    //std::cout << std::endl;
     //t.postorderRec();
     //std::cout << std::endl;
     //std::cout<<t.heightRec()<<std::endl;
     //std::cout << t.size() << std::endl;
     //t.inorder();
     //t.postorder();
-    t.preorder();
-  return 0;
+    //t.preorder();
+    //std::cout << t.width() << std::endl;
+    //std::cout << t.height() << std::endl;
+    //std::cout << t.isBST() << std::endl;
+    return 0;
 }
+
 
 
