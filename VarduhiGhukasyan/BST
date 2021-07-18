@@ -1,0 +1,671 @@
+#include <cassert>
+#include <limits>
+#include <iostream>
+#include <stack>
+#include <queue>
+#include <iomanip>
+
+struct Node
+{
+    Node(int d = 0, Node* l = nullptr, Node* r = nullptr)
+        : data(d)
+        , left(l)
+        , right(r)
+    {}
+
+    int data;
+    Node* left;
+    Node* right;
+};
+
+class BST
+{
+public:
+    BST()
+        : root(nullptr)
+    {}
+
+    ////////////////////////////////////////
+    ~BST()
+    {
+        // TODO - free memory
+        Clear(root);
+    }
+   
+    void Clear()
+    {
+        //root=Clear(root);
+        Clear(root);
+        
+    }
+   
+    //TODO- should return the number of elements
+    int size() const
+    {
+
+        if (!root) return 0;
+
+        Node* curr = root;
+        int count = 0;
+
+        std::stack<Node*> st;
+        st.push(root);
+
+        while (!st.empty())
+        {
+            if (curr->right) {
+                st.push(curr->right);
+            }
+            if (curr->left) {
+                curr = curr->left;  
+            }
+            else {
+                curr=st.top();
+                st.pop();
+                
+            }
+            count++;
+
+        }
+
+        return count;
+    }
+
+    // TODO - the length of the longest path from root to leaves
+    int height() const
+    {
+        if (!root) return std::numeric_limits<int>::max();
+
+        int temp = 0;
+        int count = -1;
+
+        Node* curr = root;
+
+        std::queue<Node*> _hert;
+        _hert.push(curr);
+
+        while (!_hert.empty())
+        {
+            temp = _hert.size();
+
+            while (temp != 0)
+            {
+                curr = _hert.front();
+                _hert.pop();
+
+                if (curr->right) {
+                    _hert.push(curr->right);
+                }
+                if (curr->left) {
+                    _hert.push(curr->left);
+                }
+                temp--;
+            }
+            count++;
+        }
+        return count;
+    }
+
+    // TODO
+    int heightRec()
+    {
+        return heightRec(root) - 1;
+    }
+    ////////////////////////////////////////
+
+    // XYZRec-named functions are just helper functions which then call
+    // another function normally with extra Node* which then does the job.
+    int sizeRec() const
+    {
+        return sizeRec(root);
+    }
+
+    bool find(int key) const
+    {
+        Node* curr = root;
+        while (curr)
+        {
+            if (curr->data == key)
+            {
+                return true;
+            }
+            curr = curr->data < key ? curr->right : curr->left;
+        }
+        return false;
+    }
+
+    bool findRec(int key) const
+    {
+        return findRec(root, key);
+    }
+
+    void insert(int key)
+    {
+        if (!root)
+        {
+            root = new Node(key);
+            return;
+        }
+
+        Node* prev = nullptr;
+        Node* curr = root;
+
+        while (curr)
+        {
+            prev = curr;
+            curr = curr->data < key ? curr->right : curr->left;
+        }
+        if (prev->data < key)
+        {
+            prev->right = new Node(key);
+        }
+        else
+        {
+            prev->left = new Node(key);
+        }
+    }
+
+    void insertRec(int key)
+    {
+        insertRec(root, key);
+    }
+
+    int min() const
+    {
+        Node* curr = root;
+        while (curr->left)
+        {
+            curr = curr->left;
+        }
+        return curr->data;
+    }
+
+    int minRec() const
+    {
+        return minRec(root);
+    }
+
+    // selects kth smallest element
+    // k == 0 means the minimum,
+    // k == 1 the next one in the order (second smallest)
+    int select(int k) const
+    {
+        Node* curr = root;
+        while (curr)
+        {
+            int leftSize = sizeRec(curr->left);
+            if (leftSize == k)
+            {
+                return curr->data;
+            }
+            if (leftSize < k)
+            {
+                curr = curr->right;
+                k = k - (leftSize + 1);
+            }
+            else
+            {
+                curr = curr->left;
+            }
+        }
+        return std::numeric_limits<int>::max();
+    }
+
+    int selectRec(int k) const
+    {
+        return selectRec(root, k);
+    }
+
+    void inorderRec() const
+    {
+        inorderRec(root);
+    }
+
+    // TODO * - careful
+    bool isBST() const
+    {
+        Node* curr = root;
+        std::queue<Node*> hert;
+        hert.push(curr);
+
+        while (!hert.empty())
+        {
+            curr = hert.front();
+            hert.pop();
+
+            if (curr->left) {
+                if (curr->left->data < curr->data)
+                    hert.push(curr->left);
+
+                else {
+                    return false;
+                }
+            }
+
+            if (curr->right) {
+                if (curr->right->data > curr->data)
+                    hert.push(curr->right);
+
+                else {
+                    return false;
+                }
+            }
+                  
+        }
+        return true;
+    }
+
+    // TODO
+    void preorderRec() const
+    {
+        preorderRec(root);
+    }
+
+    // TODO
+    void postorderRec() const
+    {
+        postorderRec(root);
+    }
+
+    // start here before inorder and postorder iterative versions
+    void preorder() const
+    {
+        if (!root) return;
+        Node* curr = root;
+        std::stack<Node*> _stack;
+        _stack.push(root);
+
+        while (_stack.size())
+        {
+            std::cout << curr->data << ", ";
+            if (curr->right) _stack.push(curr->right);
+            if (curr->left) curr = curr->left;
+            else {
+                curr = _stack.top();
+                _stack.pop();
+            }
+        }
+    }
+
+    // TODO
+    void inorder() const
+    {
+        if (!root) return;
+        Node* curr = root;
+        std::stack<Node*> _stack;
+        _stack.push(root);
+        do
+        {
+            if (!curr->left) std::cout << curr->data << ", ";
+            else
+            {
+                _stack.push(curr);
+                curr = curr->left;
+                continue;
+            }
+            if (curr->right) curr = curr->right;
+            else
+            {
+                while (!curr->right && _stack.size()!= 1)
+                {
+                    curr = _stack.top();
+                    _stack.pop();
+                    std::cout << curr->data << ", ";
+                }
+                curr = curr->right;
+            }
+        } while (curr);
+    }
+
+    /*void inorderIterative(Node* root)
+    {       
+        std::stack<Node*> stack;      
+        Node* curr = root;
+   
+        while (!stack.empty() || curr != nullptr)
+        {
+            if (curr != nullptr){
+                stack.push(curr);
+                curr = curr->left;
+            }
+            else {            
+                curr = stack.top();
+                stack.pop();
+                std::cout << curr->data << " ";
+                curr = curr->right;
+            }
+        }
+    }*/
+
+    // TODO
+    void postorder() const
+    {
+        if (!root) return;
+        std::stack<Node*> s1, s2;
+
+        Node* curr = root;
+        s1.push(curr);
+
+        while (!s1.empty())
+        {
+            curr = s1.top();
+            s1.pop();
+            s2.push(curr);
+
+            if (curr->left)
+                s1.push(curr->left);
+            if (curr->right)
+                s1.push(curr->right);
+            
+        }
+
+        while (!s2.empty())
+        {
+            std::cout << s2.top()->data<<", ";
+            s2.pop();
+        }
+    }
+
+    // TODO - using queue
+    int width() const
+    {
+        if (!root) return 0;
+
+        Node* curr = root;
+        int _width = 0;
+        std::queue<Node*> _queue;
+
+        _queue.push(root);
+        int temp = _queue.size();
+        while (temp)
+        {
+            _width = (_width < temp) ? temp : _width;
+            while (temp--)
+            {
+                curr = _queue.front();
+                _queue.pop();
+                if (curr->left) _queue.push(curr->left);
+                if (curr->right) _queue.push(curr->right);
+            }
+            temp = _queue.size();
+        }
+        return _width;
+    }
+   
+
+    // TODO (difficult)
+    // consider what happens when the node has 2 children, or just 1 or not at all
+    // how about using minRec()?
+    void remove(int key)
+    {
+        Node* curr = root;
+        Node* prev = nullptr;
+
+        k_address(curr, key, prev);
+
+        if (!curr->right && !curr->left)
+        {
+            if (curr == root)
+            {
+                root = nullptr;
+            }
+            else {
+                if (prev->left == curr) prev->left = nullptr;
+                else prev->right = nullptr;
+            }
+            delete curr;
+            return;
+        }
+
+        else if (curr->left && curr->right) {
+            int keyIndex = 0;
+            Node* minadd = nullptr;
+            min_elem_address(curr->right, minadd);
+            int _data = minadd->data;
+            remove(search_key_index(_data));
+            curr->data = _data;
+            return;
+        }
+
+        else {
+            /*if (prev->right == curr) {
+                if (!curr->left) {
+                    prev->right = curr->right;
+                }
+                else {
+                    prev->right = curr->left;
+                }
+            }
+            else {
+                if (!curr->left) {
+                    prev->left = curr->right;
+                }
+                else {
+                    prev->left = curr->left;
+                }
+            }
+            delete curr;*/
+
+            Node*& temp = (prev->left == curr) ? prev->left : prev->right;
+            Node*& currtemp = (curr->left) ? curr->left : curr->right;
+            temp = currtemp;           
+            delete curr;
+            return;
+        }
+    }
+
+    //our code 
+    int search_key_index(int key)
+    {
+        Node* curr = root;
+        int _index = size()-1;
+
+        while (curr->data != key)
+        {
+            if (curr->data > key) {
+                _index = _index - (sizeRec(curr->right) + 1);
+                curr = curr->left;
+            }
+            else {                
+                curr = curr->right;
+            }
+        }
+        return _index-sizeRec(curr->right);
+    }
+
+private:
+
+    int sizeRec(Node* x) const
+    {
+        if (!x)
+        {
+            return 0;
+        }
+        return 1 + sizeRec(x->left) + sizeRec(x->right);
+    }
+
+    bool findRec(Node* x, int key) const
+    {
+        if (!x)
+        {
+            return false;
+        }
+        return x->data < key ? findRec(x->right, key) : findRec(x->left, key);
+    }
+
+    // Can be "Node* insertRec(Node* x, int key)"
+    void insertRec(Node*& x, int key)
+    {
+        if (!x)
+        {
+            x = new Node(key);
+            return;
+        }
+
+        if (x->data < key)
+        {
+            insertRec(x->right, key);
+        }
+        else
+        {
+            insertRec(x->left, key);
+        }
+    }
+
+    int minRec(Node* x) const
+    {
+        if (!x->left)
+        {
+            return x->data;
+        }
+        return minRec(x->left);
+    }
+
+    void inorderRec(Node* x) const
+    {
+        if (!x) return;
+        inorderRec(x->left);
+        std::cout << x->data << ", ";
+        inorderRec(x->right);
+    }
+
+    //Node* Clear(Node* x)
+    //{
+    //    if (!x) return nullptr;
+    //    Clear(x->left);
+    //    Clear(x->right);
+    //    delete x;
+    //    return nullptr;
+    //    //x = nullptr;
+    //}
+
+    void Clear(Node* & x)
+    {
+        if (!x) return;
+        
+        Clear(x->left);
+        Clear(x->right);
+        delete x;
+        x = nullptr;
+    }
+
+    int heightRec(Node * x) const
+    {
+        int Rmax = 0;
+        int Lmax = 0;
+
+        if (!x) return 0;
+
+        Rmax = 1 + heightRec(x->right);
+        Lmax = 1 + heightRec(x->left);
+
+        return Rmax < Lmax ? Lmax : Rmax;
+    }
+
+    void preorderRec(Node* x) const
+    {
+        if (!x) return;
+        std::cout << x->data << ", ";
+        preorderRec(x->left);
+        preorderRec(x->right);
+    }
+
+    void postorderRec(Node* x) const
+    {
+        if (!x) return;
+        postorderRec(x->left);
+        postorderRec(x->right);
+        std::cout << x->data << ", ";
+    }
+
+    // TODO
+    int selectRec(Node* x, int k) const
+    {
+        if(!x) return std::numeric_limits<int>::max();
+
+        int _size = sizeRec(x->left);
+
+        if(k == _size) return x->data;
+
+        if(_size < k) selectRec(x->right,k-=_size+1);
+
+        else selectRec(x->left,k);
+          
+    }
+    
+    //our code
+    void min_elem_address(Node * x,Node*& min)
+    { 
+        while (x->left->left)
+        {
+            x = x->left;
+        }
+        min = x;
+    }
+
+    //our code 
+    Node* k_address(Node*& curr, int key, Node*& prev)
+    {
+        while (curr)
+        {
+            int leftSize = sizeRec(curr->left);
+            if (leftSize == key)
+            {
+                return curr;
+            }
+            prev = curr;
+
+            if (leftSize < key)
+            {
+                curr = curr->right;
+                key = key - (leftSize + 1);
+            }
+            else
+            {
+                curr = curr->left;
+            }
+        }
+        return nullptr;
+    }
+
+private:
+    Node* root;
+};
+
+int main()
+{
+    BST  t1;
+    
+    t1.insert(13); t1.insert(8);  t1.insert(20);  t1.insert(15);
+    t1.insert(23); t1.insert(22); t1.insert(14);  t1.insert(11);
+    t1.insert(4);  t1.insert(3);  t1.insert(7);   t1.insert(5);
+
+    std::cout << t1.sizeRec() << "\n";
+    //t.Clear();
+    std::cout << t1.size() << "\n";
+    std::cout << "Rcursiv -> " << t1.heightRec() << "\n";
+    std::cout << "Height : " << t1.height() << "\n";
+    std::cout << "width : " << t1.width() << "\n";
+    std::cout << "InorderRec : "; t1.inorderRec();
+    
+    std::cout << "\nPreorderRec : "; t1.preorderRec();
+
+    std::cout << "\nPostorderRec : "; t1.postorderRec();
+   
+    std::cout << "\nPreorder : "; t1.preorder();
+    
+    std::cout << "\nInorder : "; t1.inorder();
+    
+    std::cout << "\nPostorder: "; t1.postorder();
+    
+    std::cout << "\n";
+    std::cout<<"k="<<t1.select(6);
+
+    std::cout << "\n";
+    std::cout<<"Tree is BTS "<<std::boolalpha <<t1.isBST()<<std::noboolalpha;
+
+    std::cout << "\n";
+    t1.remove(6);
+    t1.inorder();
+   
+}
