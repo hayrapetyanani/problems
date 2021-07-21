@@ -7,15 +7,17 @@
 
 struct Node
 {
-    Node(int d = 0, Node* l = nullptr, Node* r = nullptr)
+    Node(int d = 0, Node* l = nullptr, Node* r = nullptr, Node* p = nullptr)
         : data(d)
         , left(l)
         , right(r)
+        , parent(p)
     {}
 
     int data;
     Node* left;
     Node* right;
+    Node* parent;
 };
 
 class BST
@@ -112,13 +114,18 @@ public:
             prev = curr;
             curr = curr->data < key ? curr->right : curr->left;
         }
+
+
+
         if (prev->data < key)
         {
             prev->right = new Node(key);
+            prev->right->parent = prev;
         }
         else
         {
             prev->left = new Node(key);
+            prev->left->parent = prev;
         }
     }
 
@@ -132,6 +139,99 @@ public:
     // how about using minRec()?
     void remove(int key)
     {
+        Node* curr = root;
+        bool side = true;// 0 -> left , 1 -> right 
+        while (curr)
+        {
+            if (curr->data == key)
+            {
+                break;
+            }
+            if (curr->data < key)
+            {
+                curr = curr->right;
+            }
+            else
+            {
+                curr = curr->left;
+            }
+
+        }
+        if (!curr)
+        {
+            std::cout << "Key " << key << " not found in the" << " provided BST.\n";
+            return;
+        }
+
+        if (!curr->right && !curr->left)
+        {
+            if (curr == root)
+            {
+                root = nullptr;
+            }
+            if (curr->parent->right == curr)
+            {
+                curr->parent->right = nullptr;
+            }
+            else
+            {
+                curr->parent->left = nullptr;
+            }
+            delete curr;
+        }
+
+        else if (curr->right && curr->left)
+        {
+            Node* min = min_getNode(curr->right);
+           
+            int val = min->data;
+            remove(min->data);
+            curr->data = val;
+
+
+            /*if (min->parent != curr)
+            {
+                min->parent->left = nullptr;
+                min->left = curr->left;
+                min->right = curr->right;
+
+                min->right->parent = min->left->parent = min;
+
+                if (curr->parent->right == curr)
+                {
+                    curr->parent->right = min->right;
+                }
+                else
+                {
+                    curr->parent->left = min->left;
+                }
+            }
+            else
+            {
+                
+            }
+            delete curr;*/
+        }
+        else
+        {
+            Node* child = (curr->left) ? curr->left : curr->right;
+            if (curr != root)
+            {
+                if (curr == curr->parent->left) {
+                    curr->parent->left = child;
+                }
+                else {
+                    curr->parent->right = child;
+                }
+            }
+            else {
+                root = child;
+            }
+            delete curr;
+        }
+
+
+
     }
 
     int min() const
@@ -223,48 +323,8 @@ public:
     // TODO * - careful
     bool isBST() const
     {
-        int size, height;
-        Node* curr = root;
-        std::queue<Node*> queue;
-        queue.push(root);
 
-        while (!queue.empty())
-        {
-            size = queue.size();
-            while (size--)
-            {
-                curr = queue.front();
-                queue.pop();
-                if (curr->left) 
-                {
-                    if (curr->left->data < curr->data)
-                    {
-                        queue.push(curr->left);
-
-                    }
-
-                    else
-                    {
-                        return false;
-                    }
-                }
-                if (curr->right)
-                {
-                    if (curr->right->data > curr->data)
-                    {
-                        queue.push(curr->right);
-
-                    }
-                    else
-                    {
-                        return false;
-                    }
-                }
-
-            }
             
-        }
-
         return true;
     }
 
@@ -288,29 +348,6 @@ public:
     // start here before inorder and postorder iterative versions
     void preorder() const
     {
-        /*Node* curr = root;
-        std::stack<Node*> prnt_stck;
-
-        while (curr || !prnt_stck.empty())
-        {
-            while (curr)
-            {
-                std::cout << curr->data << ", ";
-
-                if (curr->right)
-                {
-                    prnt_stck.push(curr->right);
-                }
-                curr = curr->left;
-            }
-
-            if (!prnt_stck.empty())
-            {
-                curr = prnt_stck.top();
-                prnt_stck.pop();
-            }
-
-        }*/
         Node* curr = root;
         std::stack<Node*> stack1, stack2;
         stack1.push(curr);
@@ -331,31 +368,39 @@ public:
             }
 
         }
-
+        std::cout << std::endl;
     }
 
     // TODO
     void inorder() const
     {
         Node* curr = root;
-        std::stack<Node*> prnt_stck;
+        std::stack<Node*> stack1, stack2;
 
 
-        while (curr || !prnt_stck.empty())
+        while (curr || !stack1.empty())
         {
             while (curr)
             {
-                prnt_stck.push(curr);
-                curr = curr->left;
+                stack1.push(curr);
+                curr = curr->right;
             }
 
-            curr = prnt_stck.top();
-            prnt_stck.pop();
+            curr = stack1.top();
+            stack1.pop();
+            stack2.push(curr);
 
-            std::cout << curr->data << ", ";
-
-            curr = curr->right;
+            curr = curr->left;
         }
+
+
+        while (!stack2.empty())
+        {
+            std::cout << stack2.top()->data << ", ";
+            stack2.pop();
+        }
+        std::cout << std::endl;
+
     }
 
     // TODO
@@ -385,7 +430,7 @@ public:
             std::cout << stack2.top()->data << ", ";
             stack2.pop();
         }
-
+        std::cout << std::endl;
 
     }
 
@@ -425,6 +470,63 @@ public:
         }
         return max;
 
+    }
+
+    Node* successor(Node* first)
+    {
+        if (!first)
+        {
+            return nullptr;
+        }
+        if (first->right)
+        {
+            return min_getNode(first->right);
+        }
+        
+        Node* temp = first->parent;
+        Node* n = first;
+        while (temp && n==temp->right )
+        {
+            n = temp;
+            temp = temp->parent;
+        }
+        return temp;
+       
+    }
+
+    Node* getNode(int key)
+    {
+        Node* curr = root;
+        std::stack<Node*> stack1, stack2;
+        stack1.push(curr);
+
+        while (!stack1.empty())
+        {
+            curr = stack1.top();
+            stack1.pop();
+            if (curr->data == key) return curr;
+            
+
+            if (curr->right)
+            {
+                stack1.push(curr->right);
+            }
+            if (curr->left)
+            {
+                stack1.push(curr->left);
+            }
+
+        }
+
+    }
+    Node* min_getNode(Node* temp) const
+    {
+        Node* curr = temp;
+        while (curr->left)
+        {
+            curr = curr->left;
+        }
+        return curr;
     }
 
 private:
@@ -527,6 +629,10 @@ private:
         }
     }
 
+   
+
+    
+
 
 private:
     Node* root;
@@ -541,8 +647,11 @@ int main()
     t.insert(17);
     t.insert(-44);
     t.insert(6);
+    t.insert(19);
     t.insert(18);
-
+    t.insert(10);
+    
+    //t.remove(1);
     //t.inorderRec();
     //std::cout << std::endl;
     //t.preorderRec();
@@ -557,6 +666,13 @@ int main()
     //std::cout << t.width() << std::endl;
     //std::cout << t.height() << std::endl;
     //std::cout << t.isBST() << std::endl;
+   /* Node* it = (t.getNode(t.min()));
+    while (it)
+    {
+        std::cout <<it->data<<", ";
+        it = t.successor(it);
+    }*/
+    
     return 0;
 }
 
