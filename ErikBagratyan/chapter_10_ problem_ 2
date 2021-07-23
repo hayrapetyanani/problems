@@ -1,0 +1,128 @@
+#include <iostream>
+#include <vector>
+#include <ctime>
+
+class NoteBook
+{
+  public:
+    NoteBook():page_count(0),cost(0),dirty_page_count(0) {}
+    NoteBook(int _page_count, uint _cost):page_count(_page_count),cost(_cost),dirty_page_count(0) {}
+    
+    int get_page_count() const
+    {
+        return page_count;
+    }
+    
+    int get_cost() const
+    {
+        return cost;
+    }
+    
+    int get_filled_page_count() const
+    {
+        return dirty_page_count;
+    }
+    
+    void set_page_count(int page_count)
+    {
+        this->page_count = (page_count > -1) ? page_count : 0;
+    }
+    
+    void set_cost(int cost)
+    {
+        this->cost = (cost > -1) ? cost : 0;
+    }
+    
+    void set_dirty_page_count(int dirty_page_count)
+    {
+        this->dirty_page_count = (dirty_page_count > -1 && dirty_page_count <= this->page_count)
+        ? dirty_page_count : 0;
+    }
+    
+    void print_NoteBook() const
+    {
+        std::cout << "Page_Count : " << page_count 
+        << "\nCost : " << cost << "$\nFilled_Page_Count : " 
+        << dirty_page_count << std::endl;
+    }
+    
+    void set_NoteBook(int page_count, int cost, int dirty_page_count)
+    {
+        this->page_count = (page_count > -1) ? page_count : 0;
+        this->cost = (cost > -1) ? cost : 0;
+        this->dirty_page_count = (dirty_page_count > -1 && dirty_page_count <= this->page_count)
+        ? dirty_page_count : 0;
+    }
+    
+    int clean_page_count() const
+    {
+        return page_count - dirty_page_count;
+    }
+    
+    bool equal_NoteBook(const NoteBook& outher) const
+    {
+        if(this->page_count != outher.page_count) return false;
+        if(this->cost != outher.cost) return false;
+        if(this->dirty_page_count != outher.dirty_page_count) return false;
+        
+        return true;
+    }
+    
+  private:
+    unsigned int page_count;
+    unsigned int cost;
+    unsigned int dirty_page_count;
+};
+
+int main()
+{
+    ///             1               ///
+    NoteBook notebook1,notebook2(-13,8);
+    notebook2.print_NoteBook();
+    std::cout << std::endl;
+    notebook1.set_page_count(25);
+    notebook1.set_cost(13);
+    notebook1.print_NoteBook();
+    std::cout << std::endl;
+    notebook2.set_dirty_page_count(12);
+    notebook2.print_NoteBook();
+    std::cout << std::endl;
+    notebook2.set_NoteBook(-10,-5,6);
+    notebook2.print_NoteBook();
+    std::cout << "\n///////////////////////////////////////////////////////\n\n";
+    //////////////////////////////////
+    ///             2              ///
+    std::vector<NoteBook> notebook(8);
+    int number = 100;
+    srand(time(NULL));
+    for(int i = 0; i < notebook.size(); ++i)
+    {
+        notebook[i].set_page_count(rand() % 645 + 5);
+        notebook[i].set_cost(rand() % 25 + 1);
+        notebook[i].set_dirty_page_count(rand() % 351);
+    }
+    for(auto elem : notebook)
+    {
+        //if(elem.clean_page_count() >= number)
+        //{
+            elem.print_NoteBook();
+            std::cout << std::endl;
+        //}
+    }
+    std::cout << "\n///////////////////////////////////////////////////////\n\n";
+    //////////////////////////////////
+    ///             3              ///
+    NoteBook note;
+    NoteBook* ptrnotebook = &note;
+    for(int i = 0; i < notebook.size(); ++i)
+    {
+        if(notebook[i].get_page_count()/2 <= notebook[i].clean_page_count())
+        {
+            if(ptrnotebook->get_cost() < notebook[i].get_cost())
+            ptrnotebook = &notebook[i];
+        }
+    }
+    ptrnotebook->print_NoteBook();
+    /////////////////////////////////
+    return 0;
+}
