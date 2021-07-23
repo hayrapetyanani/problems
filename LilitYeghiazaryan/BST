@@ -435,7 +435,7 @@ public:
     // TODO - using queue
     int width() const
     {
-        int max, temp_max, size;
+        int max, size;
         Node* curr = root;
         std::queue<Node*> queue;
         queue.push(root);
@@ -443,7 +443,6 @@ public:
 
         while (!queue.empty())
         {
-            temp_max = 0;
             size = queue.size();
             if (size > max)
             {
