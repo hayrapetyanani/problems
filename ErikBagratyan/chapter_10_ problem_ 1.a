@@ -1,0 +1,17 @@
+#include <iostream>
+using namespace std;
+
+class T 
+{
+public:
+
+    T( const T& other) { other.g(); } //Կոնստանտ օբյեկտները չեն կարող կանչել ոչ կոնստանտ ֆունկցիաներ
+    int g() {}  //ֆունկցիան int տիպի է ,և չի վերադարձնում արժեք
+    
+    void operator.(T& other) { other.g(); } //Չենք կարող ․ օպերատորը գերբեռնել
+};
+
+int main()
+{
+    return 0;
+}
