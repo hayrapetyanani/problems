@@ -322,10 +322,8 @@ public:
 
     // TODO * - careful
     bool isBST() const
-    {
-
-            
-        return true;
+    { 
+        return isBST(root);
     }
 
     void inorderRec() const
@@ -447,6 +445,10 @@ public:
         {
             temp_max = 0;
             size = queue.size();
+            if (size > max)
+            {
+                max = size;
+            }
             while (size--)
             {
                 curr = queue.front();
@@ -455,18 +457,14 @@ public:
                 if (curr->left)
                 {
                     queue.push(curr->left);
-                    temp_max++;
                 }
                 if (curr->right)
                 {
                     queue.push(curr->right);
-                    temp_max++;
                 }
-                if (temp_max > max)
-                {
-                    max = temp_max;
-                }
+                
             }
+            
         }
         return max;
 
@@ -576,6 +574,15 @@ private:
         return minRec(x->left);
     }
 
+    int maxRec(Node* x) const
+    {
+        if (!x->right)
+        {
+            return x->data;
+        }
+        return maxRec(x->right);
+    }
+
     // TODO
     int selectRec(Node* x, int k) const
     {
@@ -629,7 +636,28 @@ private:
         }
     }
 
-   
+    bool isBST(Node* curr) const
+    {
+        bool t;
+        Node* temp;
+        if (curr)
+        {
+            if (curr->left && curr->right)
+            {
+                return (isBST(curr->left) && isBST(curr->right) && (curr->data >= maxRec(curr->left)) && (curr->data < minRec(curr->right)));
+            }
+            if (curr->left)
+            {
+                return (isBST(curr->left)  && (curr->data >= maxRec(curr->left)));
+            }
+            if (curr->right)
+            {
+                return (isBST(curr->right) && (curr->data < minRec(curr->right)));
+            }
+           
+        }
+        return true;
+    }
 
     
 
@@ -637,7 +665,6 @@ private:
 private:
     Node* root;
 };
-
 int main()
 {
     BST t;
@@ -650,7 +677,7 @@ int main()
     t.insert(19);
     t.insert(18);
     t.insert(10);
-    
+      
     //t.remove(1);
     //t.inorderRec();
     //std::cout << std::endl;
