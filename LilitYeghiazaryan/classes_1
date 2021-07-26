@@ -1,0 +1,52 @@
+/* ա)
+class T {
+public:
+	T(const T& other) { other.g(); }
+	int g() {}
+	void operator.(T& other) { other.g(); }
+};
+*/
+class T {
+public:
+	T(const T& other) { g(); }
+	int g() { return 1; }
+	void call_g (T& other) { other.g(); }
+};
+/* բ)
+class A {
+public:
+	int* f() const { return &c; }
+	void ~A() {}
+private:
+	int c;
+	int d = 15;
+};
+*/
+class A {
+public:
+	int* f() const { return c; }
+	 ~A() {}
+private:
+	int* c;
+	int d = 15;
+};
+
+/* գ)
+class B {
+public:
+	void f() const { ++b; g(); }
+	void g() {}
+private:
+	static int b = 20;
+};
+*/
+class B {
+public:
+
+	static void f() { ++b; g(); }
+	static void g() {}
+private:
+	static int b;
+};
+int B::b = 20;
+
