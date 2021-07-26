@@ -1,0 +1,137 @@
+#include <iostream>
+#include <vector>
+class NoteBook
+{
+private:
+
+	int page_num;
+	int price;
+	int full_pages;
+
+public:
+
+	NoteBook() :page_num(0), price(0), full_pages(0) {}
+	NoteBook(int, int);
+
+	int getAllPages() const;
+	int getFullPages() const;
+	int getPrice() const;
+
+	void setAllPages(const int);
+	void setFullPages(const int);
+	void setPrice(const int);
+
+	int clearPages() const;
+	bool isEqual(const NoteBook&);
+
+	friend std::ostream& operator<<(std::ostream& stream, const NoteBook&);
+	friend std::istream& operator>>(std::istream& stream, NoteBook&);
+};
+
+NoteBook::NoteBook(int pages, int pr):full_pages(0)
+{
+	page_num = (pages > 0) ? pages : 0;
+	price = (pr > 0) ? pr : 0;
+}
+
+int NoteBook::getAllPages() const
+{
+	return page_num;
+}
+
+int NoteBook::getFullPages() const
+{
+	return full_pages;
+}
+
+int NoteBook::getPrice() const
+{
+	return price;
+}
+
+void NoteBook::setAllPages(const int pages)
+{
+	page_num = (pages > 0) ? pages : 0;
+}
+
+void NoteBook::setFullPages(const int full)
+{
+	full_pages = (full <= page_num) ? full : page_num;
+}
+
+void NoteBook::setPrice(const int pr)
+{
+	price = (pr > 0) ? pr : 0;
+}
+
+int NoteBook::clearPages() const
+{
+	return page_num - full_pages;
+}
+
+bool NoteBook::isEqual(const NoteBook& nb)
+{
+	return (page_num == nb.page_num) && (full_pages == nb.full_pages) && (price == nb.price);
+}
+
+std::ostream& operator<<(std::ostream& stream, const NoteBook& nb)
+{
+	stream << "All pages: " << nb.page_num << "\n" << "Full Pages: " << nb.full_pages << "\n"
+		<< "Price: " << nb.price << "\n";
+	return stream;
+}
+
+std::istream& operator>>(std::istream& stream, NoteBook& nb)
+{
+	int temp;
+	std::cout << "Input number of all pages ";
+	stream >> temp;
+	nb.setAllPages(temp);
+	std::cout << "Input number of full pages ";
+	stream >> temp;
+	nb.setFullPages(temp);
+	std::cout << "Input price ";
+	stream >> temp;
+	nb.setPrice(temp);
+	return stream;
+}
+
+int main()
+{
+	NoteBook nb1(144,400), nb2(200,500),nb3(122,200);
+	std::cout << nb1 << nb2;
+	//std::cin >> nb2;
+	nb1.setFullPages(40);
+	nb2.setFullPages(122);
+	nb3.setFullPages(20);
+	std::cout << nb1.clearPages() << "\n";
+	std::cout << nb1.isEqual(nb2) << "\n";
+
+	std::vector<NoteBook> nb_vec;
+	nb_vec.push_back(nb1);
+	nb_vec.push_back(nb2);
+	nb_vec.push_back(nb3);
+	int page;
+	std::cout << "Clear pages ";
+	std::cin >> page;
+	std::cout << "Notebooks with more than " << page << " clear pages \n";
+	for (auto i : nb_vec)
+	{
+		if(i.clearPages()>=page) 
+		{
+			std::cout << i;
+		}
+	}
+	NoteBook nb;
+	for (auto i : nb_vec)
+	{
+		if (i.clearPages() > i.getAllPages() / 2)
+		{
+			if (nb.getPrice() < i.getPrice())
+			{
+				nb = i;
+			}
+		}
+	}
+	std::cout << nb;
+}
