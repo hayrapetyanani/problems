@@ -1,0 +1,96 @@
+#include <string>
+#include <iostream>
+#include <functional>
+#include <vector>
+
+struct Node
+{
+    int data;
+    Node * next;
+};
+void insert(int key,Node* &h)
+{
+ Node * ptr=new Node () ;
+ if(h)
+{
+ptr->next=h;
+ptr->data=key;
+h=ptr;
+}
+else 
+{
+ ptr->data=key;
+ h=ptr;
+}
+}
+bool find(int key,Node * h)
+{
+    Node * curr=h;
+    while (curr)
+    {
+        if(curr->data==key)
+        return true;
+        curr=curr->next;
+    }
+    return false;
+}
+void Delete (int key,Node *&h)
+{
+     Node * curr=h;
+     Node *prev=nullptr;
+    while (curr)
+    { 
+        if(curr->data==key)
+        {
+            if (curr!=h)
+            prev->next=curr->next;
+            else 
+             h=curr->next;
+            delete(curr);
+            return;
+        }
+        prev=curr;
+        curr=curr->next;
+    }
+}
+int main()
+{  
+    std::vector <Node*> hash_table;
+    hash_table.resize(5);
+    auto h = std::hash<int>{};
+    insert(9,hash_table[h(9)%5]);
+    insert(22,hash_table[h(22)%5]);
+    insert(4,hash_table[h(4)%5]);
+    insert(35,hash_table[h(35)%5]);
+    insert(17,hash_table[h(17)%5]);
+    insert(5,hash_table[h(5)%5]);
+    insert(31,hash_table[h(31)%5]);
+    insert(6,hash_table[h(6)%5]);
+    insert(11,hash_table[h(11)%5]);
+    insert(7,hash_table[h(7)%5]);
+    insert(3,hash_table[h(3)%5]);
+    size_t n=hash_table.size();
+    for(int i=0;i<n;i++)
+      {  
+          Node *curr=hash_table[i];
+          while(curr)
+         {
+              std::cout<<curr->data<<" ";
+              curr=curr->next;
+         }
+         std::cout<<"\n";
+      }
+    std::cout<<std::boolalpha<<find(7,hash_table[h(7)%5])<<"\n";
+    Delete(7,hash_table[h(7)%5]);
+    for(int i=0;i<n;i++)
+      {  
+          Node *curr=hash_table[i];
+          while(curr)
+         {
+              std::cout<<curr->data<<" ";
+              curr=curr->next;
+         }
+         std::cout<<"\n";
+      }
+    std::cout<<std::boolalpha<<find(7,hash_table[h(7)%5])<<"\n";
+}
