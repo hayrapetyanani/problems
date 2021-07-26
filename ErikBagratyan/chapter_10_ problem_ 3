@@ -1,0 +1,156 @@
+#include <iostream>
+#include <cmath>
+#include <iomanip>
+#include <vector>
+#include <ctime>
+
+class Point
+{
+public:
+Point() :x(0), y(0) {}
+
+Point(double _x, double _y) :x(_x), y(_y) {};
+
+double get_x() const { return x; }
+double get_y() const { return y; }
+
+void set_x(double x)
+{
+this->x = x;
+}
+
+void set_y(double y)
+{
+this->y = y;
+}
+
+void set_x_y(double x, double y)
+{
+this->x = x;
+this->y = y;
+}
+
+
+void print_pointer() const
+{
+std::cout << "X = " << x << "\n"
+<< "Y = " << y << "\n";
+}
+
+bool operator == (const Point& ob1) const
+{
+return (x==ob1.x && y==ob1.y);
+}
+
+bool operator != (const Point& ob1) const
+{
+return !(x == ob1.x && y == ob1.y);
+}
+
+double distance(const Point& ob) const
+{
+if (this == &ob) return 0;
+return sqrt((ob.x-x)* (ob.x - x)+(ob.y-y)* (ob.y - y));
+}
+
+double foo() const
+{
+return sqrt(x * x + y * y);
+}
+
+Point parallel_X(double number)
+{
+this->x += number;
+return *this;
+}
+
+Point parallel_Y(double number)
+{
+this->y += number;
+return *this;
+}
+
+private:
+double x;
+double y;
+};
+
+
+int main()
+{
+//1
+Point p1, p2(8,13);
+
+p1.set_x_y(0,7);
+
+std::cout <<p2.distance(p1)<<"\n";
+std::cout << p2.distance(p2) << "\n";
+
+std::cout <<p1.foo();
+
+std::cout << "\n";
+std::cout << "p1==p2 " << std::boolalpha << (p1 == p2) << "\n";
+std::cout << "p1!=p2 " << std::boolalpha << (p1 != p2) << "\n\n";
+
+p1.parallel_X(8.13).print_pointer();
+std::cout << "\n";
+p2.parallel_Y(13.8).print_pointer();
+std::cout << "\n";
+
+
+
+//2
+int number = 12;
+std::vector<Point> myPoint(4);
+
+srand(time(NULL));
+
+for (int i = 0; i < myPoint.size(); ++i)
+{
+myPoint[i].set_x(rand() % 17-2);
+myPoint[i].set_y(rand() % 17-2);
+}
+
+for (auto elem : myPoint)
+{
+elem.print_pointer();
+std::cout <<"d0= "<<elem.foo();
+std::cout << "\n\n";
+}
+
+std::cout << "\nResult:\n";
+
+for (auto elem : myPoint)
+{
+if (elem.foo() > number) {
+elem.print_pointer();
+std::cout << elem.foo();
+std::cout << "\n\n";
+}
+}
+
+//3
+double temp=0;
+double _distance = 0;
+Point ob1, ob2;
+for (int i = 0; i < myPoint.size()-1; ++i)
+{
+for (int j = i + 1; j < myPoint.size() ; ++j)
+{
+_distance = myPoint[i].distance(myPoint[j]);
+if ( _distance > temp) {
+temp = _distance;
+ob1 = myPoint[i];
+ob2 = myPoint[j];
+}
+}
+}
+
+std::cout << "\nResult:\n";
+std::cout << "Max distance = " << temp << "\n";
+ob1.print_pointer();
+std::cout << "\n";
+ob2.print_pointer();
+
+return 0;
+}
