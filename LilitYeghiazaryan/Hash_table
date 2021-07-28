@@ -1,0 +1,110 @@
+#include <iostream>
+#include <vector>
+#include <list>
+
+class Hash_table
+{
+private:
+
+    std::vector < std::list<int> > vec;
+    int size_of_vec;
+
+public:
+
+    Hash_table(int sz = 10)
+    {
+        size_of_vec = (sz > 0) ? sz : 10;
+        vec.resize(size_of_vec);
+    }
+
+    void change_size(int sz)
+    {
+        std::vector < std::list<int> > temp;
+        temp.resize(sz);
+        if (sz > 0)
+        {
+            for (int i = 0; i < size_of_vec; ++i)
+            {
+                for (auto const& j : vec[i])
+                {
+                    temp[j % sz].push_back(j);
+                }
+            }
+            size_of_vec = sz;
+            vec = temp;   
+        }
+        else
+        {
+            std::cout << "Can't change size" << "\n";
+        }
+    }
+
+    void insert_elem(int elem)
+    {
+        vec[elem % size_of_vec].push_back(elem);
+    }
+
+    void print()
+    {
+        for (int i = 0; i < size_of_vec; ++i)
+        {
+            std::cout << i << " -> ";
+            for (auto const& j : vec[i]) 
+            {
+                std::cout << j << ", ";
+            }
+            std::cout << "\n";
+        }
+    }
+
+    // returns index of vec
+    int search(int val)
+    {
+        int key = val % size_of_vec, count=-1;
+
+        for (auto const& j : vec[key]) 
+        {
+            count++;
+            if (j == val)
+            {
+                break;
+            }
+            
+        }
+        if (count != -1)
+        {
+            return key;
+        }
+        return -1;
+    }
+
+    void delete_elem(int val)
+    {
+        int key = val % size_of_vec;
+
+        for (auto it = vec[key].begin(); it != vec[key].end(); ) 
+        {
+            if (*it  == val) 
+            {
+                it = vec[key].erase(it);
+            }
+           
+        }
+    
+    }
+};
+
+int main()
+{
+    Hash_table hash1;
+    hash1.insert_elem(24);
+    hash1.insert_elem(5);
+    hash1.insert_elem(15);
+    hash1.print();
+    std::cout << hash1.search(16) << "\n";
+    hash1.change_size(12);
+    hash1.print();
+    hash1.delete_elem(15);
+    hash1.print();
+    
+}
