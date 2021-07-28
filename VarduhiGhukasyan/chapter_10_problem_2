@@ -50,11 +50,11 @@ public:
         return page_count - dirty_page_count;
     }
 
-    bool equal(const NoteBook&) const
+    bool equal(const NoteBook& other) const
     {
-        if (this->page_count != page_count) return false;
-        if (this->cost != cost) return false;
-        if (this->dirty_page_count != page_count) return false;
+        if (this->page_count != other.page_count) return false;
+        if (this->cost != other.cost) return false;
+        if (this->dirty_page_count != other.page_count) return false;
 
         return true;
     }
