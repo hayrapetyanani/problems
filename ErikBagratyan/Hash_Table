@@ -1,0 +1,83 @@
+#include <iostream>
+#include <vector>
+#include <list>
+#include <limits>
+#include <functional>
+
+std::hash<int> h;
+
+class Hash
+{
+  public:
+    Hash(int _size) 
+    :   table_size(_size)
+    {
+        hash_table.resize(table_size);
+    }
+    
+    void insert(int x)
+    {
+       int index = h(x) % table_size;
+       hash_table[index].push_back(x);
+    }
+    
+    void deleteElem(int x)
+    {
+        int index = h(x) % table_size;
+        auto it = hash_table[index].begin();
+        for(; it != hash_table[index].end(); ++it)
+        {
+            if(*it == x) 
+            {
+                break;
+            }
+        }
+        if(it != hash_table[index].end()) hash_table[index].erase(it);
+    }
+    
+    bool find(int key)
+    {
+        int index = h(key) % table_size;
+        for(auto it = hash_table[index].begin(); it != hash_table[index].end(); ++it)
+        {
+            if(*it == key)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    void Show_Table() 
+    {
+      for (int i = 0; i < table_size; i++) 
+      {
+        std::cout << i;
+        for (auto x : hash_table[i])
+        {
+          std::cout << " --> " << x;
+        }
+        std::cout << "\n";
+      }
+    }
+    
+  private:
+    int table_size;
+    std::vector<std::list<int>> hash_table;
+};
+
+int main()
+{
+    std::vector<int> _vector{8,13,54,23,25,6,4,21,15};
+    Hash table(13);
+    for(auto elem : _vector)
+    {
+        table.insert(elem);
+    }
+    table.Show_Table();
+    std::cout << std::boolalpha << table.find(10) << "\n";
+    table.deleteElem(25);
+    std::cout << "\n\n";
+    table.Show_Table();
+    return 0;
+}
