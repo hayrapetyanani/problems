@@ -1,0 +1,113 @@
+#include <iostream>
+#include <vector>
+
+class Point
+{
+private:
+	double x;
+	double y;
+public:
+	Point() :x(0), y(0) {}
+	Point(double, double);
+
+	friend std::ostream& operator<<(std::ostream&, const Point&);
+	friend std::istream& operator>>(std::istream&, Point&);
+	
+	double dist2Points(const Point&);
+	double distance0();
+
+	bool operator== (const Point&);
+	bool operator!= (const Point&);
+
+	void parallelX(double);
+	void parallelY(double);
+};
+
+Point::Point(double x, double y)
+{
+	this->x = x;
+	this->y = y;
+}
+
+std::ostream& operator<<(std::ostream& stream, const Point& p)
+{
+	stream << "( " << p.x << " , " << p.y << " )";
+	return stream;
+}
+std::istream& operator>>(std::istream& stream, Point& p)
+{
+	std::cout << "Input X ";
+	stream >> p.x;
+	std::cout << "Input Y ";
+	stream >> p.y;
+	return stream;
+}
+
+double Point::dist2Points(const Point& p)
+{
+	return sqrt((x - p.x) * (x - p.x) + (y - p.y) * (y - p.y));
+}
+double Point::distance0()
+{
+	return sqrt(x * x + y * y);
+}
+
+bool Point::operator== (const Point& p)
+{
+	return (x == p.x && y == p.y);
+}
+bool Point::operator!= (const Point& p)
+{
+	return (x != p.x) || (y != p.y);
+}
+
+void Point::parallelX(double step)
+{
+	y = y + step;
+}
+void Point::parallelY(double step)
+{
+	x = x + step;
+}
+
+int main()
+{
+	Point p1, p2(4, 3), p3(1, 1);
+	std::cout << p1 << " " << p2 << "\n";
+	std::cin >> p1;
+	std::cout << p1.dist2Points(p2) << "\n";
+	std::cout << p2.distance0() << "\n";
+	p2.parallelX(3);
+	std::cout << p2 << "\n";
+	std::cout << (p2 == p3) << "\n";
+	std::cout << (p2 != p3) << '\n';
+
+	std::vector<Point> vec;
+	double dist = 2;
+	vec.push_back(p1);
+	vec.push_back(p2);
+	vec.push_back(p3);
+	for (auto& i : vec)
+	{
+		if (i.distance0() > dist)
+		{
+			std::cout << i << "\n";
+		}
+	}
+
+	double max = -1;
+	Point p4, p5;
+	for (int i = 0; i < vec.size() - 1; ++i)
+	{
+		for (int j = i + 1; j < vec.size(); ++j)
+		{
+			dist = vec[i].dist2Points(vec[j]);
+			if (dist > max) {
+				max = dist;
+				p4 = vec[i];
+				p5 = vec[j];
+			}
+		}
+	}
+	std::cout << p4 << " & " << p5 << "\n";
+}
