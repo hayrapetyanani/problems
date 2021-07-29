@@ -1,0 +1,203 @@
+#include <iostream>
+#include <vector>
+#include <ctime>
+#include <algorithm>
+
+enum Radian {pi1_2 = 1,pi1 = 2, pi3_2 = 3};
+
+class Rectangle
+{
+  public:
+    Rectangle(double = 0,double = 0, double = 0, double = 0);
+    void parallel_move_x(double);
+    void parallel_move_y(double);
+    void rectangl_rotation(Radian);
+    Rectangle intersection_of_rectangles(const Rectangle&) const;
+    double area() const;
+    bool operator<(const Rectangle&) const;
+    
+    friend std::ostream& operator<<(std::ostream&,const Rectangle&);
+    friend std::istream& operator>>(std::istream&,Rectangle&);
+    
+  private:
+    double up_left_x;
+    double up_left_y;
+    double width;
+    double height;
+};
+
+Rectangle :: Rectangle(double x, double y, double _width, double _height)
+    :   up_left_x(x)
+    ,   up_left_y(y)
+    ,   width(_width > 0 ? _width : 0)
+    ,   height(_height > 0 ? _height : 0)
+{}
+
+void Rectangle :: parallel_move_x(double x)
+{
+    up_left_x += x;
+}
+
+void Rectangle :: parallel_move_y(double y)
+{
+    up_left_y += y;
+}
+
+double Rectangle :: area() const
+{
+    return width * height;
+}
+
+bool Rectangle :: operator<(const Rectangle& obj) const
+{
+    return this->area() < obj.area();
+}
+
+void Rectangle :: rectangl_rotation(Radian radian)
+{
+   double temp = 0;
+   switch(radian)
+   {
+       case pi1_2: {
+            up_left_x -= height;
+            temp = width;
+            width = height;
+            height = temp;
+            break;  
+       }
+       
+       case pi1: {
+            up_left_x -= width;
+            up_left_y += height;
+            break;
+       }
+       
+       case pi3_2: {
+            up_left_y += width;
+            temp = width;
+            width = height;
+            height = temp;
+            break;   
+       }
+   }
+}
+
+std::ostream& operator<<(std::ostream& stream, const Rectangle& obj)
+{
+    stream << "Rectangle_Coord : [" << obj.up_left_x << " , "
+    << obj.up_left_y <<"]\n" << "Width : " << obj.width 
+    << "\nHeight : " << obj.height << "\n";
+    return stream;
+}
+
+std::istream& operator>>(std::istream& stream,Rectangle& obj)
+{
+    double temp = 0;
+    std::cout << "Rectangle_Coord : ";
+    stream >> obj.up_left_x >> obj.up_left_y;
+    std::cout << "Width : ";
+    stream >> temp;
+    obj.width = (temp > 0) ? temp : 0;
+    std::cout << "Height : ";
+    stream >> temp;
+    obj.height = (temp > 0) ? temp : 0;
+    return stream;
+}
+
+Rectangle Rectangle :: intersection_of_rectangles(const Rectangle& obj) const
+{
+    if(this == &obj) return Rectangle();
+    
+    ////        this->Rectangle Coord       ////
+    
+    double down_right_x = up_left_x + width;
+    double down_right_y = up_left_y - height;
+    
+    ///         object Coord               ////
+    
+    double down_right_xobj = obj.up_left_x + obj.width;
+    double down_right_yobj = obj.up_left_y - obj.height;
+    ////////////////////////////////////////////////////
+    //          new Rectangle Coord                /////
+    ////////////////////////////////////////////////////
+    ///         up_left_Coord                       ////
+    double x_1 = std::max(up_left_x,obj.up_left_x);
+    double y_1 = std::min(up_left_y,obj.up_left_y);
+    ///         down_right_Coord                    ////
+    double x_2 = std::min(down_right_x,down_right_xobj);
+    double y_2 = std::max(down_right_y,down_right_yobj);
+    
+    ///  No intersection ///
+    if(x_1 > x_2 || y_1 < y_2) 
+    {
+        return Rectangle();
+    }
+    return Rectangle(x_1,y_1,x_2 - x_1, y_1 - y_2);
+}
+
+int main()
+{
+    srand(time(NULL));
+    ///         1         ///
+    /////////////////////////
+    Rectangle rectangle(8,13,13,8);
+    Rectangle rectangle_1(1,1,1,1);
+    std::cout << rectangle << "\n";
+    std::cin >> rectangle_1;
+    std::cout << "\n" << rectangle_1 << "\n";
+    std::cout << std::boolalpha << (rectangle_1 < rectangle) << "\n\n";
+    rectangle.parallel_move_y(-15);
+    rectangle.parallel_move_x(10);
+    std::cout << rectangle << "\n\n";
+    rectangle.rectangl_rotation(pi1);
+    std::cout << rectangle << "\n";
+    ///////////////////////////////
+    ///         2               ///
+    ///////////////////////////////
+    int number = 3;
+    std::vector<Rectangle> rectangles;
+    for(int i = 0; i < number; ++i)
+    {
+        rectangles.push_back(Rectangle(double(rand()% 65 - 24), double(rand()% 65 - 24)
+        , double(rand() % 21), double(rand() % 21)));
+    }
+    
+    for(auto elem : rectangles)
+    {
+        std::cout << elem << "\n";
+    }
+    
+    Rectangle _rectangle = rectangles[0];
+    
+    for(int i = 1; i < rectangles.size(); ++i)
+    {
+        _rectangle = _rectangle.intersection_of_rectangles(rectangles[i]);
+    }
+    
+    if(_rectangle.area()) std::cout << _rectangle;
+    else std::cout << "NO\n\n";
+    
+    std::cout << "///////////////////////////////////////////////////////\n";
+    ////            3          ///
+    /////////////////////////////
+    Rectangle first_rectangle;
+    Rectangle second_rectangle;
+    double max_area = 0, temp_area = 0;
+    
+    for(int i = 0; i < rectangles.size() - 1; ++i)
+    {
+        for(int j = i + 1; j < rectangles.size(); ++j)
+        {
+            temp_area = rectangles[i].intersection_of_rectangles(rectangles[j]).area();
+            if(temp_area > max_area)
+            {
+                max_area = temp_area;
+                first_rectangle = rectangles[i];
+                second_rectangle = rectangles[j];
+            }
+        }
+    }
+    std::cout << first_rectangle << "\n\n" << second_rectangle << "\n\n" 
+         << "max_area : " << max_area << std::endl;
+    return 0;
+}
