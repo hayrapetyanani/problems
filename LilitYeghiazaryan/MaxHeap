@@ -1,0 +1,97 @@
+#include <iostream>
+#include <vector>
+class MaxHeap
+{
+private:
+	std::vector<int> vec;
+	void swap_el(int i, int j)
+	{
+		int temp;
+		temp = vec[i];
+		vec[i] = vec[j];
+		vec[j] = temp;
+	}
+public:
+	MaxHeap(std::vector<int>& temp)
+	{
+		vec = temp;
+		maxHeap();
+	}
+	int getParent(int index)
+	{
+		return (index - 1) / 2;
+	}
+	int getLeft(int index)
+	{
+		return (2 * index + 1);
+	}
+	int getRight(int index)
+	{
+		return (2 * index + 2);
+	}
+	void heapify(int j, int size=-1)
+	{
+		int left = getLeft(j);
+		int right = getRight(j);
+		int max = j;
+		size = (size == -1) ? vec.size() : size;
+		if (left < size) 
+		{
+			if (vec[j] < vec[left])
+			{
+				max = left;
+			}
+		}
+		if (right < size)
+		{
+			if (vec[max] < vec[right]) 
+			{
+				max = right;
+			}
+		}
+		if (max != j)
+		{
+			swap_el(j, max);
+			heapify(max,size);
+		}
+
+	}
+	void maxHeap()//(std::vector<int>& temp)
+	{
+		for (int i = vec.size() / 2 - 1; i >= 0; i--)
+		{
+			heapify(i);
+		}
+	}
+	void print()
+	{
+		for (auto i : vec)
+		{
+			std::cout << i << ", ";
+		}
+		std::cout << "\n";
+	}
+
+	void heapSort()
+	{
+		int size = vec.size();
+		maxHeap();
+		for (int i = size - 1; i >= 0; i--)
+		{
+			swap_el(0, i);
+			heapify(0, i);
+		}
+	}
+
+
+
+};
+int main()
+{
+	std::vector<int> vec1{ 4,1,3,2,16,9,10,14,8,7 };
+
+	MaxHeap mh1(vec1);
+	mh1.print();
+	mh1.heapSort();
+	mh1.print();
+}
