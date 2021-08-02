@@ -1,0 +1,179 @@
+#include <iostream>
+#include <vector>
+
+class Circle
+{
+private:
+	double x;
+	double y;
+	double R;
+public:
+	Circle(double, double, double);
+
+	friend std::ostream& operator<<(std::ostream&, const Circle&);
+	friend std::istream& operator>>(std::istream&, Circle&);
+	
+	double getX() const;
+	double getY() const;
+	double getR() const;
+
+	double perimeter();
+	double area() const;
+
+	double distance(const Circle&) const;
+
+	bool operator== (const Circle&) const;
+	bool operator!= (const Circle&) const;
+	bool operator< (const Circle&) const;
+	bool operator> (const Circle&) const;
+
+	void parallelX(double);
+	void parallelY(double);
+
+	void increase_area(double);
+};
+
+Circle::Circle(double x_ = 0, double y_ = 0, double R_ = 1):x(x_), y(y_)
+{
+	R = (R_ > 0) ? R_ : 1;
+}
+
+std::ostream& operator<<(std::ostream& stream, const Circle& p)
+{
+	stream << "( " << p.x << " , " << p.y << " )"<<" R = "<<p.R;
+	return stream;
+}
+std::istream& operator>>(std::istream& stream, Circle& p)
+{
+	std::cout << "Input X ";
+	stream >> p.x;
+	std::cout << "Input Y ";
+	stream >> p.y;
+	std::cout << "Input R ";
+	stream >> p.R;
+	return stream;
+}
+
+double Circle::getX() const
+{
+	return x;
+}
+double Circle::getY() const
+{
+	return y;
+}
+double Circle::getR() const
+{
+	return R;
+}
+double Circle::perimeter()
+{
+	return 6.28 * R;
+}
+
+double Circle::area() const
+{
+	return 3.14 * R * R;
+}
+
+double Circle::distance(const Circle& p) const
+{
+	return sqrt((x - p.x) * (x - p.x) + (y - p.y) * (y - p.y));
+}
+
+bool Circle::operator== (const Circle& p) const
+{
+	return (x == p.x && y == p.y && R == p.R);
+}
+bool Circle::operator!= (const Circle& p) const
+{
+	return (x != p.x) || (y != p.y) || (R != p.R);
+}
+
+bool Circle::operator< (const Circle& p) const
+{
+	return (area() < p.area());
+}
+
+bool Circle::operator> (const Circle& p) const
+{
+	return (area() > p.area());
+}
+
+void Circle::parallelX(double step)
+{
+	y = y + step;
+}
+void Circle::parallelY(double step)
+{
+	x = x + step;
+}
+
+void Circle::increase_area(double k)
+{
+	if (k > 0)
+	{
+		R = sqrt(area() * k / 3.14);
+	}
+}
+
+bool shoshapox(const Circle& p1, const Circle& p2)
+{
+	return (p1.distance(p2) == (p1.getR() + p2.getR()));
+}
+
+bool nerdrvac(const Circle& small, const Circle& big)
+{
+	if (small.getR() > big.getR())
+		return false;
+
+	double dis = small.distance(big);
+
+	if (dis + small.getR() <= big.getR())
+		return true;
+	return false;
+}
+
+int main()
+{
+	std::vector<Circle> array = { Circle(0, 0, 1) , Circle(0, 3, 2), Circle(0, -3, 2), Circle(0, 2, 1) };
+
+	int max = 0, count;
+
+	for (int i = 0; i < array.size(); ++i)
+	{
+		count = 0;
+		for (int j = 0; j < array.size(); ++j)
+		{
+			if (i != j && nerdrvac(array[i], array[j]))
+			{
+				count++;
+			}
+		}
+		if (count > max)
+		{
+			max = count;
+		}
+	}
+
+	Circle temp;
+	max = 0;
+	for (int i = 0; i < array.size(); ++i)
+	{
+		count = 0;
+		for (int j = 0; j < array.size(); ++j)
+		{
+			if (i != j && shoshapox(array[i], array[j]))
+			{
+				count++;
+			}
+		}
+		if (count > max)
+		{
+			max = count;
+			temp = array[i];
+		}
+	}
+	std::cout << temp << ": " << max << "\n";
+
+}
