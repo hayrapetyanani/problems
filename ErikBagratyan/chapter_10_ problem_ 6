@@ -1,0 +1,180 @@
+#include <iostream>
+#include <cmath>
+#include <ctime>
+#include <vector>
+
+class Circle
+{
+  public:
+    Circle(double = 1, double = 0, double = 0);
+    double area() const;
+    double perimeter() const;
+    double distance_to_centers(const Circle&) const;
+    double get_radius() const;
+    void parallel_move_x(double);
+    void parallel_move_y(double);
+    void area_increase(double);
+    
+    
+    bool operator==(const Circle&) const;
+    bool operator!=(const Circle&) const;
+    bool operator<(const Circle&) const;
+    bool operator>(const Circle&) const;
+  
+    friend std::ostream& operator<<(std::ostream&,const Circle&);
+    friend std::istream& operator>>(std::istream&,Circle&);
+    
+  private:
+    double coord_x;
+    double coord_y;
+    double radius;
+};
+
+Circle :: Circle(double radius, double x, double y) 
+            :   coord_x(x)
+                ,coord_y(y)
+{
+    this->radius = (radius > 0) ? radius : 1;
+}
+
+double Circle :: area() const
+{
+    return 3.14 * radius * radius;
+}
+
+double Circle :: perimeter() const
+{
+    return 2 * 3.14 * radius;
+}
+
+double Circle :: distance_to_centers(const Circle& obj) const
+{
+    return sqrt(pow((obj.coord_x - coord_x),2) + pow((obj.coord_y - coord_y),2));
+}
+
+void Circle :: parallel_move_x(double x)
+{
+    coord_x += x;
+}
+
+void Circle :: parallel_move_y(double y)
+{
+    coord_y += y;
+}
+
+void Circle :: area_increase(double k)
+{
+    radius = radius * sqrt(k);
+}
+
+bool Circle :: operator==(const Circle& obj) const
+{
+    return this->radius == obj.radius;
+}
+
+bool Circle :: operator!=(const Circle& obj) const
+{
+    return this->radius != obj.radius;
+}
+
+bool Circle :: operator<(const Circle& obj) const
+{
+    return this->area() < obj.area();
+}
+
+bool Circle :: operator>(const Circle& obj) const
+{
+    return this->area() > obj.area();
+}
+
+double Circle :: get_radius() const
+{
+    return radius;
+}
+
+std::ostream& operator<<(std::ostream& stream,const Circle& obj)
+{
+    stream << "Circle_Coord : (" << obj.coord_x << " , " 
+    << obj.coord_y << ")\n" << "Radius : " << obj.radius << "\n";
+    return stream;
+}
+
+std::istream& operator>>(std::istream& stream,Circle& obj)
+{
+    double temp;
+    std::cout << "Set_Circle_Coord : ";
+    stream >> obj.coord_x >> obj.coord_y;
+    std::cout << "Set_Circle_Radius : ";
+    stream >> temp;
+    obj.radius = (temp > 0) ? temp : 1;
+    return stream;
+}
+
+int main()
+{
+    ////////////////////////
+    ////        1       ////
+    ////////////////////////
+    /*Circle circle_1, circle_2(10,13.8,-8.13);
+    std::cout << circle_2 << "\n";
+    std::cin >> circle_1;
+    std::cout << std::boolalpha << (circle_1 == circle_2) << "\n"
+    << (circle_1 != circle_2) << "\n" << (circle_1 < circle_2) << "\n"
+    << (circle_1 > circle_2) << "\n\n";
+    std::cout << "S = " << circle_2.area() << "\nP = " << circle_2.perimeter() << "\n\n";
+    circle_2.area_increase(5);
+    std::cout << circle_2 << "\n";
+    std::cout << "Distance_centers : " << circle_2.distance_to_centers(circle_1) << "\n";
+    circle_2.parallel_move_x(-8);
+    circle_2.parallel_move_y(-13);
+    std::cout << circle_2;*/
+    std::cout << "//////////////////////////////////////////////////\n\n";
+    ////////////////////////
+    ////        2       ////
+    ////////////////////////
+    srand(time(NULL));
+    double number = rand() % 65;
+    std::vector<Circle> circles;
+    for(int i = 0; i < 5; ++i)
+    {
+        circles.push_back(Circle(rand() % 21,rand() % 35 - 10, rand() % 35));
+    }
+    
+    for(int i = 0; i < circles.size(); ++i)
+    {
+        if(circles[i].area() > number) std::cout << circles[i] << "\n";
+    }
+    std::cout << "//////////////////////////////////////////////////\n\n";
+    ////////////////////////
+    ////        3       ////
+    ////////////////////////
+    std::vector<Circle> circles_1;
+    circles_1.push_back(Circle(3,7,0));
+    circles_1.push_back(Circle(4,0,0));
+    circles_1.push_back(Circle(5,15,0));
+    circles_1.push_back(Circle(2,0,12));
+    circles_1.push_back(Circle(10,0,0));
+    
+    int max_count = 0, temp_count;
+    Circle temp_circle;
+    for(int i = 0; i < circles_1.size(); ++i)
+    {
+        temp_count = 0;
+        for(int j = 0; j < circles_1.size(); ++j)
+        {
+            if(i == j) continue;
+            if(circles_1[i].get_radius() + circles_1[j].get_radius() == circles_1[i].distance_to_centers(circles_1[j]))
+            {
+                temp_count++;
+            }
+        }
+        if(max_count < temp_count)
+        {
+            max_count = temp_count;
+            temp_circle = circles_1[i];
+        }
+    }
+    
+    std::cout << temp_circle << "\n";
+    return 0;
+}
