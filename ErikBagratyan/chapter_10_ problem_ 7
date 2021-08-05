@@ -1,0 +1,184 @@
+#include <iostream>
+#include <cmath>
+#include <vector>
+#include <ctime>
+#include <algorithm>
+
+struct Point
+{
+    Point(double = 0, double = 0);
+    double x;
+    double y;
+    
+};
+
+Point :: Point(double _x, double _y) 
+    :   x(_x)
+        , y(_y)
+{}
+
+struct Vector_line
+{
+        Vector_line(const Point&, const Point&);
+        double length_vec() const;
+        
+        double coord_x;
+        double coord_y;
+};
+
+double Vector_line :: length_vec() const
+{
+    return sqrt(coord_x * coord_x + coord_y * coord_y);
+}
+
+Vector_line :: Vector_line(const Point& p1, const Point& p2)
+    :   coord_x(p2.x - p1.x)
+        ,coord_y(p2.y - p1.y)
+{}
+
+class LinerSegment
+{
+  public:
+    LinerSegment(double = 0, double = 0, double = 0, double = 0);//
+    double length_of_line() const;//
+    bool operator==(const LinerSegment&) const;//
+    bool operator!=(const LinerSegment&) const;//
+    bool operator<(const LinerSegment&) const;//
+    bool operator>(const LinerSegment&) const;//
+    void parallel_movement_line_x(double);
+    void parallel_movement_line_y(double);
+    double drawn_corner_x() const;//
+    double drawn_corner_y() const;//
+    
+    friend std::ostream& operator<<(std::ostream&, const LinerSegment&);//
+    friend std::istream& operator>>(std::istream&, LinerSegment&);//
+    
+  private:
+    Point start;
+    Point end;
+};
+
+LinerSegment :: LinerSegment(double x_1, double y_1, double x_2, double y_2)
+{
+    start.x = x_1;
+    start.y = y_1;
+    end.x = x_2;
+    end.y = y_2;
+}
+
+double LinerSegment :: length_of_line() const
+{
+    return sqrt((end.x - start.x) * (end.x - start.x) + (end.y - start.y) * (end.y - start.y));
+}
+
+bool LinerSegment :: operator==(const LinerSegment& obj) const
+{
+    return this->length_of_line() == obj.length_of_line();
+}
+
+bool LinerSegment :: operator!=(const LinerSegment& obj) const
+{
+    return this->length_of_line() != obj.length_of_line();
+}
+
+bool LinerSegment :: operator<(const LinerSegment& obj) const
+{
+    return this->length_of_line() < obj.length_of_line();
+}
+
+bool LinerSegment :: operator>(const LinerSegment& obj) const
+{
+    return this->length_of_line() > obj.length_of_line();
+}
+
+void LinerSegment :: parallel_movement_line_x(double _x)
+{
+    start.x += _x;
+    end.x += _x;
+}
+
+void LinerSegment :: parallel_movement_line_y(double _y)
+{
+    start.y += _y;
+    end.y += _y;
+}
+
+double LinerSegment :: drawn_corner_x() const
+{
+   Vector_line vec(start,end); 
+   if(vec.coord_x == 0) return acos(0);
+   return acos((vec.coord_x * vec.coord_x) / (vec.length_vec() * abs(vec.coord_x)));
+}
+
+double LinerSegment :: drawn_corner_y() const
+{
+   Vector_line vec(start,end);
+   if(vec.coord_y == 0) return acos(0);
+   return acos((vec.coord_y * vec.coord_y) / (vec.length_vec() * abs(vec.coord_y))); 
+}
+
+std::ostream& operator<<(std::ostream& out, const LinerSegment& obj)
+{
+    out << "Start_Point : (" << obj.start.x << " , " << obj.start.y
+    << ")\n" << "End_Point : (" << obj.end.x << " , " << obj.end.y
+    << ")\n";
+    
+    return out;
+}
+
+std::istream& operator>>(std::istream& in, LinerSegment& obj)
+{
+    std::cout << "Enter Start_Point : ";
+    in >> obj.start.x >> obj.start.y;
+    std::cout << "Enter End_Point : ";
+    in >> obj.end.x >> obj.end.y;
+    
+    return in;
+}
+
+int main()
+{
+    /////       1           //////
+    //////////////////////////////
+    LinerSegment line, line1(8,-13,-8,13);
+    std::cout << line << "\n";
+    std::cin >> line;
+    std::cout << line << "\n" << line1<< "\n";
+    std::cout << line.length_of_line() << "\n\n";
+    std::cout << std::boolalpha << (line1 == line) << "\t" << (line1 != line)
+    << "\t" << (line1 > line) << "\t" << (line1 < line) << "\n";
+    std::cout << line.drawn_corner_y() << "\t" << line.drawn_corner_x() << "\n\n";
+    line1.parallel_movement_line_y(-5);
+    line1.parallel_movement_line_x(10);
+    std::cout << line1 << "\n";
+    /////       2           //////
+    //////////////////////////////
+    srand(time(NULL));
+    int n = 6;
+    std::vector<LinerSegment> linerSeg;
+    for(int i = 0; i < n; ++i)
+    {
+      linerSeg.push_back(LinerSegment((rand()% 36 - 15),(rand()% 36 - 15),
+                                      (rand()% 36 - 15),(rand()% 36 - 15)));  
+    }
+    double number = 18.5;
+    double temp;
+    for(auto& elem : linerSeg)
+    {
+        temp = elem.length_of_line();
+        if(temp > number) std::cout << elem  << temp << " > " << number << "\n\n";
+    }
+    /////       3           //////
+    //////////////////////////////
+    std::vector<std::pair<double,LinerSegment>> vec_line;
+    for(int i = 0; i < n; ++i)
+    {
+        vec_line.push_back({linerSeg[i].length_of_line(),linerSeg[i]});
+    }
+    std::sort(vec_line.begin(), vec_line.end());
+    for(auto& elem : vec_line)
+    {
+        std::cout << elem.second << elem.first << "\n\n"; 
+    }
+    return 0;
+}
