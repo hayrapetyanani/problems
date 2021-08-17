@@ -1,0 +1,225 @@
+#include <iostream>
+#include <vector>
+#include <ctime>
+
+class Heap
+{
+public:
+    Heap(int);//
+    void print_Heap() const;//
+    void build_Heap();//
+    void insert(int);//
+    void heap_Sort();//
+    
+    virtual void heapifyDown(int) = 0;//
+    virtual void heapifyUp(int) = 0;//
+    virtual void heapifySort(int,int) = 0;//
+    
+    friend std::ostream& operator<<(std::ostream&, const Heap&);//
+    
+protected:
+    int parent(int) const;//
+    int leftChild(int) const;//
+    int rightChild(int) const;//
+
+protected:
+    std::vector<int> heap;
+};
+
+Heap :: Heap(int size)
+{
+    heap.resize(size);
+    for(auto& elem : heap)
+    {
+        elem = rand() % 51 - 25;
+    }
+}
+
+int Heap :: parent(int index) const
+{
+    return (index - 1) / 2;
+}
+
+int Heap :: leftChild(int index) const
+{
+    return 2 * index + 1;
+}
+
+int Heap :: rightChild(int index) const
+{
+    return 2 * index + 2;
+}
+
+void Heap :: print_Heap() const
+{
+    for(int i = 0; i < heap.size() / 2; ++i)
+    {
+        std::cout << heap[i] << " : Left --> " << heap[leftChild(i)];
+        if(rightChild(i) < heap.size()) std::cout << " | Right --> " << heap[rightChild(i)] << "\n";
+    }
+}
+
+void Heap :: build_Heap()
+{
+    for(int i = heap.size() / 2; i > -1; --i)
+    {
+        heapifyDown(i);
+    }
+}
+
+void Heap :: insert(int value)
+{
+   heap.push_back(value);
+   heapifyUp(heap.size() - 1);
+}
+
+void Heap :: heap_Sort()
+{
+    for(int i = heap.size() - 1; i > 0; --i)
+    {
+        std::swap(heap[0],heap[i]);
+        heapifySort(0,i - 1);
+    }
+}
+
+std::ostream& operator<<(std::ostream& out, const Heap& obj)
+{
+    for(auto elem : obj.heap)
+    {
+        out << elem << " ";
+    }
+    return out;
+}
+
+class MaxHeap : public Heap
+{
+public:
+    MaxHeap(int);
+    void heapifyDown(int) override;
+    void heapifyUp(int) override;
+    void heapifySort(int,int) override;
+};
+
+MaxHeap :: MaxHeap(int size) : Heap(size)
+{}
+
+void MaxHeap :: heapifyDown(int index)
+{
+    if(index >= heap.size() / 2) return;
+    
+    int max_Child = leftChild(index);
+    int rightChildIndex = rightChild(index);
+    if(rightChildIndex < heap.size() && heap[max_Child] < heap[rightChildIndex])
+        max_Child = rightChildIndex;
+    
+    if(heap[index] < heap[max_Child])
+    {
+        std::swap(heap[index], heap[max_Child]);
+        heapifyDown(max_Child);
+    }
+}
+
+void MaxHeap :: heapifyUp(int index)
+{
+   if(index == 0) return;
+   
+   int parentIndex = parent(index);
+   if(heap[index] > heap[parentIndex])
+   {
+       std::swap(heap[index], heap[parentIndex]);
+       heapifyUp(parentIndex);
+   }
+}
+
+void MaxHeap :: heapifySort(int index, int length)
+{
+    if(length != 1)
+    {
+        if(index >= length / 2) return;
+    }
+    else length = 0;
+    
+    int max_Child = leftChild(index);
+    int rightChildIndex = rightChild(index);
+    if(rightChildIndex <= length && heap[max_Child] < heap[rightChildIndex])
+        max_Child = rightChildIndex;
+    
+    if(heap[index] < heap[max_Child])
+    {
+        std::swap(heap[index], heap[max_Child]);
+        heapifySort(max_Child,length);
+    }
+}
+
+class MinHeap : public Heap
+{
+public:
+    MinHeap(int);
+    void heapifyDown(int) override;
+    void heapifyUp(int) override;
+    void heapifySort(int,int) override;
+};
+
+MinHeap :: MinHeap(int size) : Heap(size)
+{}
+
+void MinHeap :: heapifyDown(int index)
+{
+    if(index >= heap.size() / 2) return;
+    
+    int max_Child = leftChild(index);
+    int rightChildIndex = rightChild(index);
+    if(rightChildIndex < heap.size() && heap[max_Child] > heap[rightChildIndex])
+        max_Child = rightChildIndex;
+    
+    if(heap[index] > heap[max_Child])
+    {
+        std::swap(heap[index], heap[max_Child]);
+        heapifyDown(max_Child);
+    }
+}
+
+void MinHeap :: heapifyUp(int index)
+{
+    if(index == 0) return;
+   
+   int parentIndex = parent(index);
+   if(heap[index] < heap[parentIndex])
+   {
+       std::swap(heap[index], heap[parentIndex]);
+       heapifyUp(parentIndex);
+   }
+}
+
+void MinHeap :: heapifySort(int index, int length)
+{
+    if(length != 1)
+    {
+        if(index >= length / 2) return;
+    }
+    else length = 0;
+    
+    int max_Child = leftChild(index);
+    int rightChildIndex = rightChild(index);
+    if(rightChildIndex <= length && heap[max_Child] > heap[rightChildIndex])
+        max_Child = rightChildIndex;
+    
+    if(heap[index] > heap[max_Child])
+    {
+        std::swap(heap[index], heap[max_Child]);
+        heapifySort(max_Child,length);
+    }
+}
+
+int main()
+{
+    srand(time(NULL));
+    MinHeap hp(8);
+    std::cout << hp << "\n\n";
+    hp.build_Heap();
+    hp.print_Heap();
+    hp.heap_Sort();
+    std::cout << "\n\n" << hp << "\n\n";
+    
+    return 0;
+}
