@@ -1,0 +1,104 @@
+#include <iostream>
+#include <vector>
+#include <ctime>
+#include <limits>
+
+class Max_Heap
+{
+  public:
+    Max_Heap(int);
+    void print_Heap() const;
+    void heapify(int);
+    void buildMaxHeap();
+    
+    friend std::ostream& operator<<(std::ostream&, const Max_Heap&);
+    
+  private:
+    int parent(int) const;
+    int leftChild(int) const;
+    int rightChild(int) const;
+  
+  private:
+    std::vector<int> heap;
+};
+
+Max_Heap :: Max_Heap(int _size)
+{
+   // _size = (_size > 0) ? _size : 1;
+   srand(time(NULL));
+   heap.resize(_size + 1);
+   heap[0] = std::numeric_limits<int>::min();
+   for(int i = 1; i < heap.size(); ++i)
+   {
+       heap[i] = rand() % 45 + 1;
+   }
+}
+
+int Max_Heap :: parent(int index) const
+{
+    return index / 2;
+}
+
+int Max_Heap :: leftChild(int index) const
+{
+    return 2 * index;
+}
+
+int Max_Heap :: rightChild(int index) const
+{
+    int temp = 2 * index + 1;
+    return (temp == heap.size()) ? 0 : temp;
+}
+
+void Max_Heap :: print_Heap() const
+{
+    for(int i = 1; i < (heap.size() + 1) / 2; ++i)
+    {
+        std::cout << heap[i] << " : Left --> " << heap[leftChild(i)] 
+        << " | Right --> " << heap[rightChild(i)] << "\n";
+    }
+}
+
+void Max_Heap :: heapify(int index)
+{
+    if(index > heap.size() / 2) return;
+    
+    int max_Child = (heap[rightChild(index)] > heap[leftChild(index)]) ?
+        rightChild(index) : leftChild(index);
+        
+        if(heap[index] < heap[max_Child])
+        {
+            std::swap(heap[index],heap[max_Child]);
+            heapify(max_Child);
+        }
+}
+
+void Max_Heap :: buildMaxHeap()
+{
+    for(int i = (heap.size() - 1) / 2; i > 0; --i)
+    {
+        heapify(i);
+    }
+}
+
+std::ostream& operator<<(std::ostream& out, const Max_Heap& obj)
+{
+    for(int i = 1; i < obj.heap.size(); ++i)
+    {
+        out << obj.heap[i] << " ";
+    }
+    out << "\n";
+    return out;
+}
+
+int main()
+{
+    Max_Heap max_heap(12);
+    std::cout << max_heap;
+    max_heap.print_Heap();
+    std::cout << "\n\n";
+    max_heap.buildMaxHeap();
+    std::cout << max_heap;
+    max_heap.print_Heap();
+    return 0;
+}
