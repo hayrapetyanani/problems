@@ -1,0 +1,136 @@
+#include <iostream>
+#include <vector>
+#include <ctime>
+#include <limits>
+
+class Max_Heap
+{
+public:
+	Max_Heap(int);
+	void print_heap()const;
+	void heapify(int);
+	void Buld_Max_Heap();
+	void Heapsort();
+
+	friend std::ostream& operator<<(std::ostream&, const Max_Heap&);
+
+private:
+	int parent(int) const;
+	int leftChild(int) const;
+	int rightChild(int) const;
+	
+
+private:
+	std::vector<int> myheap;
+};
+
+Max_Heap::Max_Heap(int _size)
+{
+	//size = (size > 0) ? size : 1;
+	srand(time(NULL));
+	myheap.resize(_size + 1);
+	myheap[0] = std::numeric_limits<int>::min();
+
+	for (int i = 1; i < myheap.size(); ++i)
+	{
+		myheap[i]=rand() % 45 + 1;	
+	}
+
+}
+
+int Max_Heap::parent(int index) const 
+{
+	return index / 2;
+}
+
+int Max_Heap::leftChild(int index) const
+{
+	return 2 * index;
+}
+
+int Max_Heap::rightChild(int index) const
+{
+	int temp = 2 * index + 1;
+	return (temp == myheap.size()) ? 0 : temp;
+}
+
+
+void Max_Heap::print_heap()const
+{
+	for (int i = 1; i < (myheap.size()+1) / 2; ++i)
+	{
+		std::cout << myheap[i] << " : Left-->" << myheap[leftChild(i)]
+			<< " | Righ--> " << myheap[rightChild(i)]<<"\n";
+	}
+}
+
+
+void Max_Heap::heapify(int index)
+{
+	if (index > myheap.size() / 2) return;
+
+	int max_Child = (myheap[rightChild(index)] > myheap[leftChild(index)]) ?
+		rightChild(index) : leftChild(index);
+
+	if (myheap[index] < myheap[max_Child])
+	{
+		std::swap(myheap[index], myheap[max_Child]);
+		heapify(max_Child);
+	}
+}
+
+std::ostream& operator<<(std::ostream& out, const Max_Heap& obj)
+{
+	for (int i = 1; i < obj.myheap.size(); ++i)
+	{
+		out << obj.myheap[i] << " ";
+	}
+
+	std::cout << "\n";
+	return out;
+}
+
+void Max_Heap::Buld_Max_Heap()
+{
+	for (int i = (myheap.size() - 1) / 2; i > 0; --i)
+	{
+		heapify(i);
+	}
+}
+
+//void Max_Heap::Heapsort()
+//{
+//	for (int i = myheap.size()-1; i > 1; --i)
+//	{
+//		std::swap(myheap[i],myheap[1]);
+//		heapify(1);
+//	}
+//}
+
+
+int main()
+{
+	Max_Heap max_heap(12);
+	std::cout << max_heap;
+	max_heap.print_heap();
+
+	std::cout << "\n\n";
+
+	max_heap.heapify(2);
+	std::cout << max_heap;
+	max_heap.print_heap();
+
+	std::cout << "\n\n";
+
+	
+	max_heap.Buld_Max_Heap();
+	max_heap.print_heap();
+	std::cout << max_heap;
+
+	std::cout << "\n\n";
+	
+	/*max_heap.Heapsort();
+	std::cout << max_heap;*/
+
+	return 0;
+}
