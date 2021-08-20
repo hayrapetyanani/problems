@@ -1,0 +1,294 @@
+#include <iostream>
+#include <vector>
+#include <ctime>
+#include <limits>
+
+class MinHeap;
+class MaxHeap;
+
+int foo(MaxHeap&, MinHeap&);
+
+class Heap
+{
+public:
+    Heap();//
+    Heap(int);//
+    void print_Heap() const;//
+    void build_Heap();//
+    void insert(int);//
+    void heap_Sort();//
+    int pop_root();//
+    
+    int getSize() const;//
+    int getRoot() const;//
+    
+    virtual void heapifyDown(int) = 0;//
+    virtual void heapifyUp(int) = 0;//
+    virtual void heapifySort(int,int) = 0;//
+    
+    friend std::ostream& operator<<(std::ostream&, const Heap&);//
+    
+protected:
+    int parent(int) const;//
+    int leftChild(int) const;//
+    int rightChild(int) const;//
+
+protected:
+    std::vector<int> heap;
+};
+
+Heap :: Heap() {}
+
+Heap :: Heap(int size)
+{
+    heap.resize(size);
+    for(auto& elem : heap)
+    {
+        elem = rand() % 51 - 25;
+    }
+}
+
+int Heap :: parent(int index) const
+{
+    return (index - 1) / 2;
+}
+
+int Heap :: leftChild(int index) const
+{
+    return 2 * index + 1;
+}
+
+int Heap :: rightChild(int index) const
+{
+    return 2 * index + 2;
+}
+
+void Heap :: print_Heap() const
+{
+    for(int i = 0; i < heap.size() / 2; ++i)
+    {
+        std::cout << heap[i] << " : Left --> " << heap[leftChild(i)];
+        if(rightChild(i) < heap.size()) std::cout << " | Right --> " << heap[rightChild(i)] << "\n";
+    }
+}
+
+void Heap :: build_Heap()
+{
+    for(int i = heap.size() / 2; i > -1; --i)
+    {
+        heapifyDown(i);
+    }
+}
+
+void Heap :: insert(int value)
+{
+   heap.push_back(value);
+   heapifyUp(heap.size() - 1);
+}
+
+void Heap :: heap_Sort()
+{
+    for(int i = heap.size() - 1; i > 0; --i)
+    {
+        std::swap(heap[0],heap[i]);
+        heapifySort(0,i - 1);
+    }
+}
+
+int Heap :: pop_root()
+{
+    int value_root = heap[0];
+    std::swap(heap[0],heap[heap.size() - 1]);
+    heap.pop_back();
+    heapifyDown(0);
+    
+    return value_root;
+}
+
+int Heap :: getSize() const
+{
+    return heap.size();   
+}
+
+int Heap ::getRoot() const
+{
+    return heap[0];
+}
+
+std::ostream& operator<<(std::ostream& out, const Heap& obj)
+{
+    for(auto elem : obj.heap)
+    {
+        out << elem << " ";
+    }
+    return out;
+}
+
+class MaxHeap : public Heap
+{
+public:
+    MaxHeap();
+    MaxHeap(int);
+    void heapifyDown(int) override;
+    void heapifyUp(int) override;
+    void heapifySort(int,int) override;
+};
+
+MaxHeap :: MaxHeap() {}
+
+MaxHeap :: MaxHeap(int size) : Heap(size)
+{}
+
+void MaxHeap :: heapifyDown(int index)
+{
+    if(index >= heap.size() / 2) return;
+    
+    int max_Child = leftChild(index);
+    int rightChildIndex = rightChild(index);
+    if(rightChildIndex < heap.size() && heap[max_Child] < heap[rightChildIndex])
+        max_Child = rightChildIndex;
+    
+    if(heap[index] < heap[max_Child])
+    {
+        std::swap(heap[index], heap[max_Child]);
+        heapifyDown(max_Child);
+    }
+}
+
+void MaxHeap :: heapifyUp(int index)
+{
+   if(index == 0) return;
+   
+   int parentIndex = parent(index);
+   if(heap[index] > heap[parentIndex])
+   {
+       std::swap(heap[index], heap[parentIndex]);
+       heapifyUp(parentIndex);
+   }
+}
+
+void MaxHeap :: heapifySort(int index, int length)
+{
+    if(length != 1)
+    {
+        if(index >= length / 2) return;
+    }
+    else length = 0;
+    
+    int max_Child = leftChild(index);
+    int rightChildIndex = rightChild(index);
+    if(rightChildIndex <= length && heap[max_Child] < heap[rightChildIndex])
+        max_Child = rightChildIndex;
+    
+    if(heap[index] < heap[max_Child])
+    {
+        std::swap(heap[index], heap[max_Child]);
+        heapifySort(max_Child,length);
+    }
+}
+
+class MinHeap : public Heap
+{
+public:
+    MinHeap();
+    MinHeap(int);
+    void heapifyDown(int) override;
+    void heapifyUp(int) override;
+    void heapifySort(int,int) override;
+};
+
+MinHeap :: MinHeap() {}
+
+MinHeap :: MinHeap(int size) : Heap(size)
+{}
+
+void MinHeap :: heapifyDown(int index)
+{
+    if(index >= heap.size() / 2) return;
+    
+    int max_Child = leftChild(index);
+    int rightChildIndex = rightChild(index);
+    if(rightChildIndex < heap.size() && heap[max_Child] > heap[rightChildIndex])
+        max_Child = rightChildIndex;
+    
+    if(heap[index] > heap[max_Child])
+    {
+        std::swap(heap[index], heap[max_Child]);
+        heapifyDown(max_Child);
+    }
+}
+
+void MinHeap :: heapifyUp(int index)
+{
+    if(index == 0) return;
+   
+   int parentIndex = parent(index);
+   if(heap[index] < heap[parentIndex])
+   {
+       std::swap(heap[index], heap[parentIndex]);
+       heapifyUp(parentIndex);
+   }
+}
+
+void MinHeap :: heapifySort(int index, int length)
+{
+    if(length != 1)
+    {
+        if(index >= length / 2) return;
+    }
+    else length = 0;
+    
+    int max_Child = leftChild(index);
+    int rightChildIndex = rightChild(index);
+    if(rightChildIndex <= length && heap[max_Child] > heap[rightChildIndex])
+        max_Child = rightChildIndex;
+    
+    if(heap[index] > heap[max_Child])
+    {
+        std::swap(heap[index], heap[max_Child]);
+        heapifySort(max_Child,length);
+    }
+}                     
+
+int main()
+{
+    srand(time(NULL));
+                            // Exanaki tesutyun :) 21-Night
+    std::vector<int> myVec {26,26,25,24,23,23,22,21,20,20,22,24,26,28
+                            ,29,31,32,32,32,32,29,27,27,26,26};
+    // default initialization                        
+    int median = 0;
+    MaxHeap maxHeap;
+    MinHeap minHeap;
+    
+    for(int i = 0; i < myVec.size(); ++i)
+    {
+        if(median <= myVec[i])
+        {
+           minHeap.insert(myVec[i]); 
+        }else maxHeap.insert(myVec[i]);
+        
+        median = foo(maxHeap,minHeap);
+    }
+    
+    std::cout << median  << std::endl;
+    
+    return 0;
+}
+
+int foo(MaxHeap& max, MinHeap& min)
+{
+    int maxHeapSize = max.getSize();
+    int minHeapSize = min.getSize();
+    if(maxHeapSize == minHeapSize)
+        return (max.getRoot() + min.getRoot()) / 2;
+    
+    if(maxHeapSize - minHeapSize == 1) return max.getRoot();
+    else if(minHeapSize - maxHeapSize == 1) return min.getRoot();
+    
+    if(maxHeapSize > minHeapSize)
+        min.insert(max.pop_root());
+    else max.insert(min.pop_root());
+    
+    return (max.getRoot() + min.getRoot()) / 2;
+}
