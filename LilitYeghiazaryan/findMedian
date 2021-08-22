@@ -1,0 +1,305 @@
+#include <iostream>
+#include <vector>
+class MaxHeap
+{
+private:
+	std::vector<int> vec;
+	void swap_el(int i, int j)
+	{
+		int temp;
+		temp = vec[i];
+		vec[i] = vec[j];
+		vec[j] = temp;
+	}
+public:
+	MaxHeap() {}
+	MaxHeap(std::vector<int>& temp)
+	{
+		vec = temp;
+		maxHeap();
+	}
+	int getRoot()
+	{
+		return (vec.size() > 0) ? vec[0] : -1;
+	}
+	int getSize()
+	{
+		return vec.size();
+	}
+	int getParent(int index)
+	{
+		return (index - 1) / 2;
+	}
+	int getLeft(int index)
+	{
+		return (2 * index + 1);
+	}
+	int getRight(int index)
+	{
+		return (2 * index + 2);
+	}
+	void heapify(int j, int size = -1)
+	{
+		int left = getLeft(j);
+		int right = getRight(j);
+		int max = j;
+		size = (size == -1) ? vec.size() : size;
+		if (left < size)
+		{
+			if (vec[j] < vec[left])
+			{
+				max = left;
+			}
+		}
+		if (right < size)
+		{
+			if (vec[max] < vec[right])
+			{
+				max = right;
+			}
+		}
+		if (max != j)
+		{
+			swap_el(j, max);
+			heapify(max, size);
+		}
+
+	}
+	void maxHeap()
+	{
+		for (int i = vec.size() / 2 - 1; i >= 0; i--)
+		{
+			heapify(i);
+		}
+	}
+	void print()
+	{
+		for (auto i : vec)
+		{
+			std::cout << i << ", ";
+		}
+	
+	}
+	void printBackwards()
+	{
+		for (int i = vec.size() - 1; i >= 0; --i)
+		{
+			std::cout << vec[i] << ", ";
+		}
+	}
+
+	void heapSort()
+	{
+		int size = vec.size();
+		maxHeap();
+		for (int i = size - 1; i >= 0; i--)
+		{
+			swap_el(0, i);
+			heapify(0, i);
+		}
+	}
+
+	void heapifyUp(int ind)
+	{
+		int p = getParent(ind);
+		if (p >= 0)
+		{
+			if (vec[p] < vec[ind])
+			{
+				swap_el(p, ind);
+				heapifyUp(p);
+			}
+		}
+	}
+	void insert(int el)
+	{
+		vec.push_back(el);
+		heapifyUp(vec.size() - 1);
+	}
+	void deleteRoot()
+	{
+		swap_el(0, vec.size() - 1);
+		vec.resize(vec.size() - 1);
+		heapify(0);
+	}
+	
+
+};
+
+class MinHeap
+{
+private:
+	std::vector<int> vec;
+	void swap_el(int i, int j)
+	{
+		int temp;
+		temp = vec[i];
+		vec[i] = vec[j];
+		vec[j] = temp;
+	}
+public:
+	MinHeap() {}
+	MinHeap(std::vector<int>& temp)
+	{
+		vec = temp;
+		minHeap();
+	}
+	int getRoot()
+	{
+		return (vec.size() > 0) ? vec[0] : -1;
+	}
+	int getSize()
+	{
+		return vec.size();
+	}
+	int getParent(int index)
+	{
+		return (index - 1) / 2;
+	}
+	int getLeft(int index)
+	{
+		return (2 * index + 1);
+	}
+	int getRight(int index)
+	{
+		return (2 * index + 2);
+	}
+	void heapify(int j, int size = -1)
+	{
+		int left = getLeft(j);
+		int right = getRight(j);
+		int min = j;
+		size = (size == -1) ? vec.size() : size;
+		if (left < size)
+		{
+			if (vec[j] > vec[left])
+			{
+				min = left;
+			}
+		}
+		if (right < size)
+		{
+			if (vec[min] > vec[right])
+			{
+				min = right;
+			}
+		}
+		if (min != j)
+		{
+			swap_el(j, min);
+			heapify(min, size);
+		}
+
+	}
+	void minHeap()
+	{
+		for (int i = vec.size() / 2 - 1; i >= 0; i--)
+		{
+			heapify(i);
+		}
+	}
+	void print()
+	{
+		for (auto i : vec)
+		{
+			std::cout << i << ", ";
+		}
+	}
+	void printBackwards()
+	{
+		for (int i = vec.size() - 1; i >= 0; --i)
+		{
+			std::cout << vec[i] << ", ";
+		}
+	}
+	void heapSort()
+	{
+		int size = vec.size();
+		minHeap();
+		for (int i = size - 1; i >= 0; i--)
+		{
+			swap_el(0, i);
+			heapify(0, i);
+		}
+	}
+
+	void heapifyUp(int ind)
+	{
+		int p = getParent(ind);
+		if (p >= 0)
+		{
+			if (vec[p] > vec[ind])
+			{
+				swap_el(p, ind);
+				heapifyUp(p);
+			}
+		}
+	}
+	void insert(int el)
+	{
+		vec.push_back(el);
+		heapifyUp(vec.size() - 1);
+	}
+	void deleteRoot()
+	{
+		swap_el(0, vec.size() - 1);
+		vec.resize(vec.size() - 1);
+		heapify(0);
+	}
+
+};
+int main()
+{
+	std::vector<int> vec1{ 10, 5, 3, 2, 4};
+	MaxHeap left;
+	MinHeap right;
+	double median = 0;
+	if (vec1.size() != 0)
+	{
+		for (int i = 0; i < vec1.size(); ++i)
+		{
+
+			if (left.getSize() == right.getSize())
+			{
+				if (vec1[i] >= median)
+				{
+					right.insert(vec1[i]);
+					median = right.getRoot();
+				}
+				else
+				{
+					left.insert(vec1[i]);
+					median = left.getRoot();
+				}
+			}
+			else
+			{
+				if (vec1[i] >= median)
+				{
+					right.insert(vec1[i]);
+				}
+				else
+				{
+					left.insert(vec1[i]);
+				}
+				if (abs(left.getSize() - right.getSize()) > 1)
+				{
+					if (left.getSize() > right.getSize())
+					{
+						right.insert(left.getRoot());
+						left.deleteRoot();
+					}
+				}
+				median = (left.getRoot() + right.getRoot()) / 2.0;
+			}
+			left.printBackwards(); right.print();
+			std::cout << "\n median is:  " << median << "  \n ";
+
+		}
+	}
+	else
+	{
+		std::cout << "vector is empty";
+	}
+
+}
